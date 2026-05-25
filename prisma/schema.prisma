@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String?
+  companyName String?
+  document    String? // CPF or CNPJ
+  address     String?
+  role      String   @default("CUSTOMER") // ADMIN, EMPLOYEE, CUSTOMER
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+  subscriptions Subscription[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  imageUrl    String?
+  videoUrl    String?
+  isAvailable Boolean  @default(true)
+  stock       Int      @default(0)
+  
+  // Assinaturas
+  isSubscription Boolean @default(false)
+  billingCycle   String? // "MONTHLY", "YEARLY"
+
+  // Informações Ricas (Landing Page)
+  features    String[] @default([])
+  faq         Json?    @default("[]")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]
+  subscriptions Subscription[]
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  
+  couponId    String?
+  coupon      Coupon?  @relation(fields: [couponId], references: [id])
+
+  quantity    Int      @default(1)
+  totalAmount Float    @default(0)
+  status      String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  createdAt   DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Coupon {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  discountType String   @default("PERCENTAGE") // PERCENTAGE, FIXED
+  discountValue Float
+  expiryDate   DateTime?
+  usageLimit   Int?
+  usedCount    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  orders       Order[]
+}
+
+model Subscription {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  
+  status      String   @default("ACTIVE") // ACTIVE, CANCELED, PAST_DUE
+  nextBillingDate DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}

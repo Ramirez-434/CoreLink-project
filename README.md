@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HJ Infor / CoreLink - E-commerce de Softwares 🚀
 
-## Getting Started
+Bem-vindo ao repositório oficial da plataforma CoreLink (HJ Infor). 
+Este é um SaaS E-commerce completo feito com tecnologias de ponta para venda de sistemas, gestão de clientes e faturamento automatizado.
 
-First, run the development server:
+## 📚 Documentação do Código (Para Desenvolvedores e Administradores)
+Nós preparamos uma documentação detalhada (fácil de ler e "bem mastigada") explicando todo o código e os fluxos do sistema.
+Se você precisa entender como este sistema foi feito, confira os arquivos de leitura obrigatória na pasta `docs/`:
 
+- [1. Visão Geral e Tecnologias](docs/1-visao-geral.md)
+- [2. Estrutura de Pastas e Rotas](docs/2-estrutura-de-pastas.md)
+- [3. O Banco de Dados (Prisma)](docs/3-banco-de-dados.md)
+- [4. Autenticação e Segurança (Logins)](docs/4-autenticacao.md)
+- [5. O Fluxo de Vendas e o Design](docs/5-fluxo-e-design.md)
+
+## 🛠️ Tecnologias Principais
+- Next.js 15 (App Router)
+- React e Server Actions
+- TailwindCSS (Styling e Dark Mode)
+- Prisma ORM com PostgreSQL (Neon DB)
+- NextAuth.js (Auth.js v5) para Autenticação Segura
+
+## ⚙️ Como Rodar Localmente
+
+1. Abra a pasta do projeto em seu terminal.
+2. Certifique-se de ter as variáveis configuradas corretamente no arquivo `.env`.
+3. Instale os pacotes:
+```bash
+npm install
+```
+4. Sincronize as tabelas do Banco de Dados:
+```bash
+npx prisma db push
+```
+5. Rode o servidor de desenvolvimento:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pronto! Acesse `http://localhost:3000` no seu navegador!
