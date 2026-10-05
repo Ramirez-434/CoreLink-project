@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { createOrder } from "@/actions/order";
 import { useRouter } from "next/navigation";
-import { Package, ShieldCheck, CreditCard, Tag, Check, X } from "lucide-react";
+import { Package, ShieldCheck, CreditCard, Tag, Check, X, Zap } from "lucide-react";
 import { validateCoupon } from "@/actions/coupon";
+import { toast } from "sonner";
 
 type Product = {
   id: string;
@@ -15,26 +16,27 @@ type Product = {
 
 export function CheckoutForm({ product }: { product: Product }) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [couponError, setCouponError] = useState("");
   const [lgpdConsent, setLgpdConsent] = useState(false);
-  
+
   const router = useRouter();
 
   const handleApplyCoupon = async () => {
     if (!couponCode) return;
     setValidatingCoupon(true);
     setCouponError("");
-    
+
     const res = await validateCoupon(couponCode);
     if (res.valid) {
       setAppliedCoupon(res.coupon);
+      toast.success(`Cupom "${res.coupon.code}" aplicado com sucesso! 🎉`);
     } else {
       setCouponError(res.error || "Cupom inválido");
       setAppliedCoupon(null);
+      toast.error(res.error || "Cupom inválido ou expirado.");
     }
     setValidatingCoupon(false);
   };
@@ -43,10 +45,11 @@ export function CheckoutForm({ product }: { product: Product }) {
     setAppliedCoupon(null);
     setCouponCode("");
     setCouponError("");
+    toast.info("Cupom removido.");
   };
 
   const finalPrice = appliedCoupon ? (
-    appliedCoupon.discountType === "PERCENTAGE" 
+    appliedCoupon.discountType === "PERCENTAGE"
       ? product.price - (product.price * (appliedCoupon.discountValue / 100))
       : product.price - appliedCoupon.discountValue
   ) : product.price;
@@ -55,26 +58,30 @@ export function CheckoutForm({ product }: { product: Product }) {
 
   const handleCheckout = async () => {
     setLoading(true);
-    setError("");
+
+    const toastId = toast.loading("Processando seu pedido...");
 
     const res = await createOrder(product.id, appliedCoupon?.id);
-    
+
     if (res.success) {
-      router.push("/minha-conta?sucesso=true");
+      toast.success("Pedido realizado com sucesso! Redirecionando...", {
+        id: toastId,
+        description: `Seu sistema "${product.name}" foi registrado. Acesse Minha Conta para acompanhar.`,
+        duration: 4000,
+      });
+      setTimeout(() => router.push("/minha-conta?sucesso=true"), 1500);
     } else {
+      toast.error("Erro ao processar pedido.", {
+        id: toastId,
+        description: res.error || "Ocorreu um erro inesperado. Tente novamente.",
+        duration: 6000,
+      });
       setLoading(false);
-      setError(res.error || "Ocorreu um erro no pagamento.");
     }
   };
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 md:p-12 transition-colors">
-      {error && (
-        <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl font-bold">
-          {error}
-        </div>
-      )}
-      
       <div className="flex flex-col md:flex-row gap-12">
         {/* Resumo do Pedido */}
         <div className="flex-1 space-y-8">
@@ -84,12 +91,12 @@ export function CheckoutForm({ product }: { product: Product }) {
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl flex items-start gap-4">
-            <div className="bg-blue-100 dark:bg-blue-900/50 p-4 rounded-xl text-primary">
+            <div className="bg-blue-100 dark:bg-blue-900/50 p-4 rounded-xl text-primary shrink-0">
               <Package size={28} />
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{product.name}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{product.description}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">{product.description}</p>
               <div className="text-2xl font-extrabold text-primary">
                 {product.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
               </div>
@@ -105,10 +112,14 @@ export function CheckoutForm({ product }: { product: Product }) {
               <CreditCard className="text-blue-500" size={20} />
               Liberação Imediata após a confirmação
             </div>
+            <div className="flex items-center gap-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Zap className="text-yellow-500" size={20} />
+              Suporte técnico incluso no plano
+            </div>
           </div>
         </div>
 
-        {/* Formulário Fantasma (Simulação) e Botão */}
+        {/* Formulário e Botão */}
         <div className="w-full md:w-96 flex flex-col justify-center space-y-6 bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl border border-gray-100 dark:border-gray-700">
           <div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Pagamento Seguro</h3>
@@ -117,21 +128,23 @@ export function CheckoutForm({ product }: { product: Product }) {
             </p>
           </div>
 
+          {/* Cupom de Desconto */}
           <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <Tag size={16} className="text-primary"/> Cupom de Desconto
+              <Tag size={16} className="text-primary" /> Cupom de Desconto
             </h3>
-            
+
             {!appliedCoupon ? (
               <div className="flex gap-2">
-                <input 
+                <input
                   type="text"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
                   placeholder="Insira o código"
-                  className="flex-1 px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm font-mono"
+                  className="flex-1 px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
                 />
-                <button 
+                <button
                   type="button"
                   onClick={handleApplyCoupon}
                   disabled={validatingCoupon || !couponCode}
@@ -153,6 +166,7 @@ export function CheckoutForm({ product }: { product: Product }) {
             {couponError && <p className="text-red-500 text-xs mt-2 font-medium">{couponError}</p>}
           </div>
 
+          {/* Totais */}
           <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
             <div className="space-y-3 mb-6">
               <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
@@ -162,10 +176,10 @@ export function CheckoutForm({ product }: { product: Product }) {
               {appliedCoupon && (
                 <div className="flex justify-between items-center text-sm text-green-600 dark:text-green-400 font-medium">
                   <span>Desconto ({appliedCoupon.code})</span>
-                  <span>- {appliedCoupon.discountType === "PERCENTAGE" ? `${appliedCoupon.discountValue}%` : `R$ ${appliedCoupon.discountValue}`}</span>
+                  <span>- {appliedCoupon.discountType === "PERCENTAGE" ? `${appliedCoupon.discountValue}%` : appliedCoupon.discountValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
                 </div>
               )}
-              <div className="flex justify-between items-center font-bold">
+              <div className="flex justify-between items-center font-bold border-t border-gray-200 dark:border-gray-700 pt-3">
                 <span className="text-gray-900 dark:text-white">Total a pagar</span>
                 <span className="text-2xl font-extrabold text-primary">
                   {displayPrice.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
@@ -173,7 +187,7 @@ export function CheckoutForm({ product }: { product: Product }) {
               </div>
             </div>
 
-            {/* LGPD Consent Checkbox */}
+            {/* LGPD */}
             <div className="flex items-start gap-3 mb-6">
               <div className="flex items-center h-5 mt-0.5">
                 <input
@@ -185,7 +199,11 @@ export function CheckoutForm({ product }: { product: Product }) {
                 />
               </div>
               <label htmlFor="lgpd-checkout" className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer leading-relaxed">
-                Concordo com os <a href="/termos" target="_blank" className="text-primary dark:text-blue-400 hover:underline">Termos de Uso</a> e a <a href="/privacidade" target="_blank" className="text-primary dark:text-blue-400 hover:underline">Política de Privacidade</a> (LGPD).
+                Concordo com os{" "}
+                <a href="/termos" target="_blank" className="text-primary dark:text-blue-400 hover:underline">Termos de Uso</a>{" "}
+                e a{" "}
+                <a href="/privacidade" target="_blank" className="text-primary dark:text-blue-400 hover:underline">Política de Privacidade</a>{" "}
+                (LGPD).
               </label>
             </div>
 
@@ -200,7 +218,10 @@ export function CheckoutForm({ product }: { product: Product }) {
                   Processando...
                 </>
               ) : (
-                "Confirmar Pedido"
+                <>
+                  <Zap size={18} />
+                  Confirmar Pedido
+                </>
               )}
             </button>
           </div>
