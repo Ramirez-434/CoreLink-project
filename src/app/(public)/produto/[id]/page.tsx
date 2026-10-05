@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { Monitor, CheckCircle2, ShieldCheck, ChevronDown, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { AddToCartButton } from "@/components/ui/AddToCartButton";
 
 export default async function ProdutoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -88,6 +89,7 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
                       Comprar Agora
                     </span>
                   </Link>
+                  <AddToCartButton product={{ id: product.id, name: product.name, price: product.price }} />
                   
                   {/* Trust Badges */}
                   <div className="flex items-center justify-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400 mt-2">

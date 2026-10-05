@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { CartProvider } from "@/components/CartContext";
 import { Toaster } from "sonner";
 
 const inter = Inter({
@@ -27,15 +28,17 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
         <ThemeProvider>
-          {children}
-          <Toaster
-            position="top-right"
-            richColors
-            closeButton
-            toastOptions={{
-              duration: 5000,
-            }}
-          />
+          <CartProvider>
+            {children}
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              toastOptions={{
+                duration: 5000,
+              }}
+            />
+          </CartProvider>
         </ThemeProvider>
       </body>
     </html>

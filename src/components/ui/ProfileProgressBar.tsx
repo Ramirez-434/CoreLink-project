@@ -6,10 +6,11 @@ export function ProfileProgressBar({ user }: { user: User }) {
   const fields = [
     { name: "name", value: user.name, weight: 10 },
     { name: "email", value: user.email, weight: 10 },
-    { name: "phone", value: user.phone, weight: 20 },
+    { name: "phone", value: user.phone, weight: 15 },
     { name: "companyName", value: user.companyName, weight: 20 },
-    { name: "document", value: user.document, weight: 20 },
-    { name: "address", value: user.address, weight: 20 },
+    { name: "document", value: user.document, weight: 15 },
+    { name: "stateRegistration", value: user.stateRegistration, weight: 15 },
+    { name: "address", value: user.address, weight: 15 },
   ];
 
   const totalWeight = fields.reduce((acc, field) => acc + field.weight, 0);

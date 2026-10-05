@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Package } from "lucide-react";
 import { auth } from "@/auth";
+import { AddToCartButton } from "@/components/ui/AddToCartButton";
 
 export default async function Home() {
   const session = await auth();
@@ -78,6 +79,7 @@ export default async function Home() {
               >
                 Saiba mais
               </Link>
+              <AddToCartButton product={{ id: product.id, name: product.name, price: product.price }} />
             </div>
           ))
         )}

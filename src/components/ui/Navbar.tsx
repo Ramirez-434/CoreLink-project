@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Search, UserCircle, ShieldAlert, LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { auth, signOut } from "@/auth";
+import { CartIcon } from "@/components/ui/CartIcon";
 
 export default async function Navbar() {
   const session = await auth();
@@ -37,6 +38,7 @@ export default async function Navbar() {
           <Link href="/contato" className="hover:text-primary dark:hover:text-blue-400 transition-colors">contato</Link>
           
           <div className="flex items-center gap-4 border-l border-gray-200 dark:border-gray-800 pl-6 ml-2">
+            <CartIcon />
             <ThemeToggle />
             
             {!session ? (

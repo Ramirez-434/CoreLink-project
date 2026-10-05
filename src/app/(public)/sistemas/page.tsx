@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Package } from "lucide-react";
+import { AddToCartButton } from "@/components/ui/AddToCartButton";
 
 export default async function SistemasPage() {
   const products = await prisma.product.findMany({
@@ -51,13 +52,14 @@ export default async function SistemasPage() {
                   {product.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                 </p>
               </div>
-              <Link 
-                href={`/produto/${product.id}`}
-                className="inline-block bg-primary text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-primary-hover transition-colors w-full"
-              >
-                Saiba mais
-              </Link>
-            </div>
+                <Link 
+                  href={`/produto/${product.id}`}
+                  className="inline-block bg-primary text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-primary-hover transition-colors w-full"
+                >
+                  Saiba mais
+                </Link>
+                <AddToCartButton product={{ id: product.id, name: product.name, price: product.price }} />
+              </div>
           ))
         )}
       </div>
