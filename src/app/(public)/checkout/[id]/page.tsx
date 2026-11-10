@@ -6,18 +6,34 @@ import { CheckoutForm } from "./CheckoutForm";
 export default async function CheckoutPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   
-  if (!session || !session.user) {
+  if (!session || !session.user || !session.user.id) {
     redirect("/login");
   }
 
   const { id } = await params;
-  const product = await prisma.product.findUnique({
-    where: { id }
-  });
+  const [product, user] = await Promise.all([
+    prisma.product.findUnique({ where: { id } }),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        name: true,
+        companyName: true,
+        document: true,
+        stateRegistration: true,
+      },
+    }),
+  ]);
 
   if (!product || !product.isAvailable) {
     redirect("/sistemas");
   }
+
+  const clientProfile = {
+    name: user?.name || session.user.name || "Cliente Corporativo",
+    companyName: user?.companyName?.trim() || user?.name || session.user.name || "Empresa Cliente",
+    document: user?.document || null,
+    stateRegistration: user?.stateRegistration || null,
+  };
 
   return (
     <div className="min-h-[80vh] py-20 px-4">
@@ -27,7 +43,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ id: s
           <p className="text-gray-500 dark:text-gray-400">Você está a um passo de transformar a gestão da sua empresa.</p>
         </div>
 
-        <CheckoutForm product={product} />
+        <CheckoutForm product={product} clientProfile={clientProfile} />
       </div>
     </div>
   );

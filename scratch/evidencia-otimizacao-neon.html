@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CORELINK — Plano de Incremento Funcional (Otimização Neon Serverless PostgreSQL)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.35;
+      font-size: 8.2pt;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* CABEÇALHO INSTITUCIONAL E TÉCNICO */
+    .top-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #312e81 55%, #4f46e5 100%);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .top-banner .tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.16);
+      color: #c7d2fe;
+      font-size: 6.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-bottom: 4px;
+    }
+
+    .top-banner h1 {
+      font-size: 13.6pt;
+      font-weight: 800;
+      margin: 0 0 2px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .top-banner p {
+      font-size: 8pt;
+      color: #e0e7ff;
+      margin: 0 0 7px 0;
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 7pt;
+    }
+
+    .meta-row div strong {
+      display: block;
+      color: #a5b4fc;
+      font-size: 6pt;
+      text-transform: uppercase;
+    }
+
+    /* TÍTULOS DE SEÇÃO */
+    .sec-title {
+      font-size: 9pt;
+      font-weight: 800;
+      color: #0f172a;
+      background: #f1f5f9;
+      border-left: 4px solid #4f46e5;
+      padding: 4px 8px;
+      margin: 7px 0 5px 0;
+      border-radius: 0 5px 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sec-badge {
+      font-size: 6.5pt;
+      font-weight: 700;
+      background: #dcfce7;
+      color: #15803d;
+      padding: 1.5px 7px;
+      border-radius: 8px;
+    }
+
+    p {
+      margin: 0 0 4px 0;
+      text-align: justify;
+    }
+
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 7px;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+    }
+
+    /* TABELAS */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 4px 0 6px 0;
+      font-size: 7.4pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #1e1b4b;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 6.7pt;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .status-ok {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 700;
+      font-size: 6.4pt;
+      padding: 1px 5px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    /* PAINEL DE TELEMETRIA E GRÁFICO DE QUEDA DE LATÊNCIA */
+    .telemetry-frame {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 10px;
+      padding: 9px 11px;
+      margin: 4px 0 6px 0;
+      border: 1px solid #334155;
+      page-break-inside: avoid;
+    }
+
+    .tel-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+
+    .tel-kpi {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 5px 8px;
+    }
+
+    .tel-kpi span {
+      display: block;
+      font-size: 5.8pt;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .tel-kpi strong {
+      font-size: 9.5pt;
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .tel-charts-row {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 8px;
+    }
+
+    .tel-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      padding: 7px 9px;
+    }
+
+    /* LOGS E CÓDIGO */
+    .two-col-logs {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .code-box {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 5.85pt;
+      line-height: 1.3;
+      white-space: pre-wrap;
+      border: 1px solid #334155;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer {
+      margin-top: 6px;
+      padding-top: 4px;
+      border-top: 1px solid #cbd5e1;
+      font-size: 6.8pt;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PÁGINA 1 ==================== -->
+  <div class="top-banner">
+    <div class="tag">CORELINK — PLANO DE INCREMENTO FUNCIONAL • NATIVIDADE-TO</div>
+    <h1>OTIMIZAÇÃO DE CONEXÃO SERVERLESS (NEON POSTGRESQL)</h1>
+    <p>HJ Infor — Implementação de Pool de Conexões e Rotinas de Re-tentativa (Retry) contra Cold Start no Prisma ORM</p>
+    <div class="meta-row">
+      <div><strong>Módulo de Infra</strong>Infraestrutura & Banco Cloud</div>
+      <div><strong>Prioridade</strong>ALTA (Estabilidade & SLA)</div>
+      <div><strong>Stack</strong>Neon Cloud, pg-pool, Prisma 7.8</div>
+      <div><strong>Data de Execução</strong>18/10/2026</div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 1 -->
+  <div class="sec-title">
+    <span>1. Pendência Selecionada e Priorização</span>
+    <span class="sec-badge">Prioridade: ALTA</span>
+  </div>
+  <div class="info-box">
+    <p><strong>Funcionalidade Escolhida:</strong> Otimização de Conexão com o Banco Serverless (Neon PostgreSQL) — Implementação de pool de conexões e rotinas de re-tentativa (<code>retry</code>) no Prisma ORM para neutralizar a latência de <em>cold start</em> observada nas requisições iniciais.</p>
+    <p style="margin-bottom: 0;"><strong>Justificativa Técnica:</strong> O banco PostgreSQL hospedado no Neon Cloud opera em arquitetura <em>serverless</em> com recurso de <em>scale-to-zero</em> (suspensão automática da instância computacional após inatividade). Nas primeiras requisições após um período ocioso, o tempo de despertar do nó aliado ao handshake TCP/TLS gera latência elevada (700ms a 2.500ms) ou desconexões transitórias de socket (<code>57P01</code>, <code>P1001</code>, <code>ECONNRESET</code>). A implementação de um pool persistente (<code>pg.Pool</code> com TCP Keep-Alive) e de uma extensão global de re-tentativa exponencial (<code>withDatabaseRetry</code> via <code>prisma.$extends</code>) garante resiliência total e reduz em <strong>90,3%</strong> a latência das consultas subsequentes.</p>
+  </div>
+
+  <!-- SEÇÃO 2 -->
+  <div class="sec-title">
+    <span>2. Resultado Esperado e Comportamento Alcançado</span>
+    <span class="sec-badge">Redução de 90,3% na Latência</span>
+  </div>
+  <div class="info-box">
+    <p style="margin-bottom: 0;">O módulo <code>src/lib/prisma.ts</code> foi reestruturado com cache singleton em <code>globalThis</code> tanto para o <code>pgPool</code> quanto para o <code>PrismaClient</code> estendido. O pool mantém conexões aquecidas via pacotes TCP Keep-Alive a cada 10 segundos e tolera até 15 segundos de despertar inicial. Caso uma requisição ou transação (<code>createOrder</code> / <code>updateOrderStatus</code>) encontre o banco em <em>cold start</em> ou sofra queda transitória de rede, o interceptor executa automaticamente até <strong>3 re-tentativas com Exponential Backoff + Jitter</strong> (<code>250ms ➔ 500ms ➔ 1000ms</code>), completando a operação de forma transparente sem exibir erro ao usuário final.</p>
+  </div>
+
+  <!-- SEÇÃO 3 -->
+  <div class="sec-title">
+    <span>3. Plano de Execução Detalhado</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 38%;">Atividade</th>
+        <th style="width: 22%;">Responsável</th>
+        <th style="width: 20%;">Tecnologias</th>
+        <th style="width: 10%;">Período</th>
+        <th style="width: 10%;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Parametrização do Pool Serverless (<code>src/lib/prisma.ts</code>).</strong> Configuração de <code>max: 10</code>, <code>min: 1</code>, <code>keepAlive: true</code>, timeout de 15s e listener de reciclagem de erro.</td>
+        <td>Marques Ramirez</td>
+        <td>Node.js, TypeScript, pg-pool, PrismaPg</td>
+        <td>15/10 a 16/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Motor de Retry com Exponential Backoff (<code>withDatabaseRetry</code>).</strong> Criação da extensão <code>prisma.$extends</code> interceptando <code>$allModels.$allOperations</code>.</td>
+        <td>Márcio Medrado</td>
+        <td>Prisma ORM 7.8, TypeScript, Async/Await</td>
+        <td>16/10 a 17/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Blindagem de Transações e Endpoint de Warmup (<code>/api/health/db</code>).</strong> Proteção de <code>prisma.$transaction</code> em <code>order.ts</code> e rota de diagnóstico de pool.</td>
+        <td>Marques Ramirez & Márcio Medrado</td>
+        <td>Next.js App Router, REST API, Prisma</td>
+        <td>17/10 a 18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Benchmark de Latência e Simulação de Falha <code>57P01</code>.</strong> Execução de bateria de testes (<code>scripts/benchmark-neon-pool.mjs</code>) comprovando queda de 742ms para 47ms.</td>
+        <td>Taís Fernandes, Romildo & Vandelice</td>
+        <td>Neon Cloud PostgreSQL, Perf Hooks, Logs</td>
+        <td>18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Documentação Técnica e Evidências de Infraestrutura.</strong> Consolidação das métricas de telemetria e geração do relatório formal em PDF.</td>
+        <td>Andréa Ribeiro</td>
+        <td>Git, GitHub, Markdown, PDF Engine</td>
+        <td>18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SEÇÃO 4: PARÂMETROS TÉCNICOS DO POOL E RETRY -->
+  <div class="sec-title">
+    <span>4. Especificação dos Parâmetros do Pool e Política de Re-tentativa</span>
+    <span class="sec-badge">Keep-Alive Ativo</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 26%;">Parâmetro Configurado</th>
+        <th style="width: 20%;">Valor Definido</th>
+        <th style="width: 54%;">Papel na Neutralização do Cold Start (Neon Serverless)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>max</code> / <code>min</code> (Pool Size)</td>
+        <td><code>max: 10</code> | <code>min: 1</code></td>
+        <td>Mantém ao menos 1 socket pré-alocado pronto para uso imediato e limita picos concorrentes ao pooler do Neon.</td>
+      </tr>
+      <tr>
+        <td><code>keepAlive</code> &amp; <code>InitialDelay</code></td>
+        <td><code>true</code> (<code>10.000 ms</code>)</td>
+        <td>Envia pacotes TCP Keep-Alive periódicos impedindo que firewalls intermediários derrubem conexões ativas.</td>
+      </tr>
+      <tr>
+        <td><code>connectionTimeoutMillis</code></td>
+        <td><code>15.000 ms</code> (15s)</td>
+        <td>Aguarda com segurança o tempo completo de despertar (wakeup) do compute node serverless em caso de repouso profundo.</td>
+      </tr>
+      <tr>
+        <td><code>withDatabaseRetry</code> (Backoff)</td>
+        <td><code>3 tentativas</code> (250ms base)</td>
+        <td>Intercepta códigos <code>P1001</code>, <code>P1002</code>, <code>P1017</code>, <code>57P01</code> e <code>ECONNRESET</code> com espera exponencial (250ms ➔ 500ms ➔ 1000ms).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Plano de Incremento Funcional (Otimização de Conexão Serverless — Neon PostgreSQL)</span>
+    <span>Página 1 de 2</span>
+  </div>
+
+  <!-- ==================== PÁGINA 2 ==================== -->
+  <div class="page-break"></div>
+
+  <!-- SEÇÃO 5: EVIDÊNCIA VISUAL DE TELEMETRIA E CURVA DE LATÊNCIA -->
+  <div class="sec-title" style="margin-top: 0;">
+    <span>5. Evidência Visual de Telemetria: Redução de Latência e Recuperação de Cold Start</span>
+    <span class="sec-badge">Benchmark Real</span>
+  </div>
+
+  <div class="telemetry-frame">
+    <div class="tel-kpi-grid">
+      <div class="tel-kpi"><span>1ª Requisição (Cold Start)</span><strong style="color:#f59e0b;">742,67 ms</strong></div>
+      <div class="tel-kpi"><span>Média Pool Aquecido</span><strong style="color:#34d399;">71,82 ms</strong></div>
+      <div class="tel-kpi"><span>Menor Latência (Query #4)</span><strong style="color:#60a5fa;">47,61 ms</strong></div>
+      <div class="tel-kpi"><span>Redução de Latência</span><strong style="color:#a7f3d0;">-90,3% (10,3x mais rápido)</strong></div>
+    </div>
+
+    <div class="tel-charts-row">
+      <!-- Gráfico de Queda de Latência -->
+      <div class="tel-card">
+        <div style="font-size:7.3pt; font-weight:700; color:#fff; margin-bottom:2px;">Comparativo de Tempo de Resposta (ms) — Cold Start vs. Pool Aquecido</div>
+        <div style="font-size:5.8pt; color:#94a3b8; margin-bottom:4px;">Medição real no Neon Cloud PostgreSQL via scripts/benchmark-neon-pool.mjs</div>
+        <svg viewBox="0 0 350 96" width="100%" height="88">
+          <line x1="42" y1="12" x2="340" y2="12" stroke="#334155" stroke-dasharray="2 2"/>
+          <line x1="42" y1="44" x2="340" y2="44" stroke="#334155" stroke-dasharray="2 2"/>
+          <line x1="42" y1="78" x2="340" y2="78" stroke="#475569"/>
+          <text x="38" y="15" font-size="5.8" fill="#94a3b8" text-anchor="end">800ms</text>
+          <text x="38" y="47" font-size="5.8" fill="#94a3b8" text-anchor="end">400ms</text>
+          <text x="38" y="80" font-size="5.8" fill="#94a3b8" text-anchor="end">0ms</text>
+
+          <!-- Barra 1: Cold Start 742.67ms -->
+          <rect x="58" y="17" width="32" height="61" rx="3" fill="#f59e0b"/>
+          <text x="74" y="13" font-size="6" font-weight="bold" fill="#fbbf24" text-anchor="middle">742,7ms</text>
+          <text x="74" y="89" font-size="5.8" fill="#cbd5e1" text-anchor="middle">1. Cold Start</text>
+
+          <!-- Barra 2: Pool #1 130.86ms -->
+          <rect x="120" y="67" width="32" height="11" rx="3" fill="#3b82f6"/>
+          <text x="136" y="63" font-size="6" font-weight="bold" fill="#93c5fd" text-anchor="middle">130,9ms</text>
+          <text x="136" y="89" font-size="5.8" fill="#cbd5e1" text-anchor="middle">2. Pool #1</text>
+
+          <!-- Barra 3: Pool #2 53.89ms -->
+          <rect x="182" y="73" width="32" height="5" rx="2" fill="#10b981"/>
+          <text x="198" y="69" font-size="6" font-weight="bold" fill="#6ee7b7" text-anchor="middle">53,9ms</text>
+          <text x="198" y="89" font-size="5.8" fill="#cbd5e1" text-anchor="middle">3. Pool #2</text>
+
+          <!-- Barra 4: Pool #3 54.91ms -->
+          <rect x="244" y="73" width="32" height="5" rx="2" fill="#10b981"/>
+          <text x="260" y="69" font-size="6" font-weight="bold" fill="#6ee7b7" text-anchor="middle">54,9ms</text>
+          <text x="260" y="89" font-size="5.8" fill="#cbd5e1" text-anchor="middle">4. Pool #3</text>
+
+          <!-- Barra 5: Pool #4 47.61ms -->
+          <rect x="302" y="74" width="32" height="4" rx="2" fill="#10b981"/>
+          <text x="318" y="70" font-size="6" font-weight="bold" fill="#6ee7b7" text-anchor="middle">47,6ms</text>
+          <text x="318" y="89" font-size="5.8" fill="#cbd5e1" text-anchor="middle">5. Pool #4</text>
+        </svg>
+      </div>
+
+      <!-- Fluxograma Visual de Retry -->
+      <div class="tel-card">
+        <div style="font-size:7.3pt; font-weight:700; color:#fff; margin-bottom:2px;">Fluxo de Recuperação Automática (Retry)</div>
+        <div style="font-size:5.8pt; color:#94a3b8; margin-bottom:6px;">Comportamento durante suspensão 57P01 do Neon</div>
+        <div style="font-size:6pt; space-y:4px;">
+          <div style="background:#0f172a; border-left:3px solid #ef4444; padding:4px 7px; border-radius:4px; margin-bottom:4px;">
+            <strong style="color:#fca5a5;">Tentativa #1 (0ms):</strong> Queda de Socket / Cold Start (<code>57P01</code>) ➔ <em>Interceptado pelo Prisma $extends</em>
+          </div>
+          <div style="background:#0f172a; border-left:3px solid #f59e0b; padding:4px 7px; border-radius:4px; margin-bottom:4px;">
+            <strong style="color:#fcd34d;">Tentativa #2 (+250ms):</strong> Compute Node despertando ➔ <em>Backoff Exponencial acionado (+500ms)</em>
+          </div>
+          <div style="background:#064e3b; border-left:3px solid #10b981; padding:4px 7px; border-radius:4px;">
+            <strong style="color:#6ee7b7;">Tentativa #3 (+750ms):</strong> Conexão estabelecida e Query concluída com sucesso (<code>200 OK</code>)!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 6: CÓDIGO-FONTE E LOGS DE BENCHMARK -->
+  <div class="sec-title">
+    <span>6. Implementação Técnica (src/lib/prisma.ts) e Log Oficial do Benchmark</span>
+    <span class="sec-badge">Prisma $extends</span>
+  </div>
+
+  <div class="two-col-logs">
+    <div>
+      <div style="font-size: 7.2pt; font-weight: 700; margin-bottom: 3px; color: #312e81;">6.1 Pool + Extensão de Retry em src/lib/prisma.ts</div>
+      <div class="code-box">const POOL_CONFIG: PoolConfig = {
+  connectionString: process.env.DATABASE_URL,
+  max: 10,
+  min: 1,
+  idleTimeoutMillis: 30_000,
+  connectionTimeoutMillis: 15_000,
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10_000,
+};
+
+function createOptimizedPrismaClient(): PrismaClient {
+  const adapter = new PrismaPg(pgPool);
+  const baseClient = new PrismaClient({ adapter });
+
+  return baseClient.$extends({
+    query: {
+      $allModels: {
+        async $allOperations({ model, operation, args, query }) {
+          return withDatabaseRetry(() => query(args), {
+            maxRetries: 3,
+            baseDelayMs: 250,
+            operationName: `${model}.${operation}`,
+          });
+        },
+      },
+    },
+  }) as unknown as PrismaClient;
+}</div>
+    </div>
+
+    <div>
+      <div style="font-size: 7.2pt; font-weight: 700; margin-bottom: 3px; color: #312e81;">6.2 Log Real de Execução (scripts/benchmark-neon-pool.mjs)</div>
+      <div class="code-box">====================================================================
+  BENCHMARK DE CONEXAO SERVERLESS - NEON POSTGRESQL + PRISMA POOL
+====================================================================
+  Configuracao: max=10, min=1, keepAlive=true, timeout=15000ms
+
+  [1] Requisicao Inicial (Handshake + Wakeup): 742.67 ms
+  [2] Query Prisma no Pool Aquecido #1:        130.86 ms (idle=1)
+  [3] Query Prisma no Pool Aquecido #2:         53.89 ms (idle=1)
+  [4] Query Prisma no Pool Aquecido #3:         54.91 ms (idle=1)
+  [5] Query Prisma no Pool Aquecido #4:         47.61 ms (idle=1)
+--------------------------------------------------------------------
+  SIMULACAO DE RECUPERACAO AUTOMATICA (COLD START / 57P01)
+--------------------------------------------------------------------
+  [RETRY] Falha em "Product.count" (57P01). Tentativa 1/3 em 250ms
+  [RETRY] Falha em "Product.count" (57P01). Tentativa 2/3 em 500ms
+  [OK] Operacao recuperada na tentativa #3! Total de produtos: 4
+====================================================================
+  Latencia Inicial: 742.67 ms | Media Pool: 71.82 ms (-90.3%)
+====================================================================</div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 7: MATRIZ DE TESTES E RESILIÊNCIA -->
+  <div class="sec-title">
+    <span>7. Roteiro de Validação e Testes de Resiliência Serverless</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 24%;">Cenário de Teste</th>
+        <th style="width: 36%;">Procedimento Executado</th>
+        <th style="width: 40%;">Resultado Obtido na Homologação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Despertar Inicial (Cold Start)</strong></td>
+        <td>Disparar primeira consulta após período de suspensão do compute node no Neon Cloud.</td>
+        <td>Conexão estabelecida em <code>742,67 ms</code> sem timeout, preenchendo imediatamente o pool (<code>totalCount=1</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Reuso de Conexão (Warm Pool)</strong></td>
+        <td>Executar bateria sequencial de consultas <code>Order.count</code> utilizando o mesmo <code>PrismaClient</code>.</td>
+        <td>Queda drástica da latência para média de <code>71,82 ms</code> (mínima de <code>47,61 ms</code>), representando ganho de <strong>90,3%</strong>.</td>
+      </tr>
+      <tr>
+        <td><strong>Injeção de Falha <code>57P01</code></strong></td>
+        <td>Simular queda abrupta de conexão por encerramento administrativo do servidor serverless.</td>
+        <td>Rotina <code>withDatabaseRetry</code> interceptou a exceção, aguardou 250ms e 500ms, e concluiu a query na 3ª tentativa com sucesso.</td>
+      </tr>
+      <tr>
+        <td><strong>Healthcheck <code>/api/health/db</code></strong></td>
+        <td>Consultar endpoint GET de diagnóstico e pré-aquecimento da aplicação Next.js.</td>
+        <td>Retorno HTTP 200 com JSON informando <code>status: "HEALTHY"</code>, latência da sonda e contadores do pool.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Evidência de Conclusão de Incremento Funcional (Otimização de Conexão Serverless — Neon PostgreSQL)</span>
+    <span>Página 2 de 2 • Autenticado via PostgreSQL & Prisma ORM</span>
+  </div>
+
+</body>
+</html>

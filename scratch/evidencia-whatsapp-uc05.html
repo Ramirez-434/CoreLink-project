@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CORELINK — Plano de Incremento Funcional (UC05 - Integração B2B via WhatsApp API)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.35;
+      font-size: 8.2pt;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* CABEÇALHO INSTITUCIONAL E TÉCNICO */
+    .top-banner {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 55%, #10b981 100%);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .top-banner .tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      color: #d1fae5;
+      font-size: 6.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-bottom: 4px;
+    }
+
+    .top-banner h1 {
+      font-size: 13.8pt;
+      font-weight: 800;
+      margin: 0 0 2px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .top-banner p {
+      font-size: 8pt;
+      color: #ecfdf5;
+      margin: 0 0 7px 0;
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      font-size: 7pt;
+    }
+
+    .meta-row div strong {
+      display: block;
+      color: #a7f3d0;
+      font-size: 6pt;
+      text-transform: uppercase;
+    }
+
+    /* TÍTULOS DE SEÇÃO */
+    .sec-title {
+      font-size: 9pt;
+      font-weight: 800;
+      color: #0f172a;
+      background: #f1f5f9;
+      border-left: 4px solid #059669;
+      padding: 4px 8px;
+      margin: 7px 0 5px 0;
+      border-radius: 0 5px 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sec-badge {
+      font-size: 6.5pt;
+      font-weight: 700;
+      background: #dcfce7;
+      color: #15803d;
+      padding: 1.5px 7px;
+      border-radius: 8px;
+    }
+
+    p {
+      margin: 0 0 4px 0;
+      text-align: justify;
+    }
+
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 7px;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+    }
+
+    /* TABELAS */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 4px 0 6px 0;
+      font-size: 7.4pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 6.7pt;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .status-ok {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 700;
+      font-size: 6.4pt;
+      padding: 1px 5px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    /* MOCKUP VISUAL DUPLO: MINHA CONTA + WHATSAPP PAYLOAD */
+    .visual-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 9px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid;
+    }
+
+    .portal-card {
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-radius: 9px;
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .wa-card {
+      background: #0b141a;
+      color: #e9edef;
+      border: 1px solid #059669;
+      border-radius: 9px;
+      padding: 9px 11px;
+    }
+
+    .wa-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1f2c34;
+      padding-bottom: 5px;
+      margin-bottom: 6px;
+    }
+
+    .wa-bubble {
+      background: #005c4b;
+      color: #e9edef;
+      border-radius: 7px;
+      padding: 7px 9px;
+      font-size: 6.4pt;
+      line-height: 1.35;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* LOGS E CÓDIGO */
+    .two-col-logs {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .code-box {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 5.9pt;
+      line-height: 1.31;
+      white-space: pre-wrap;
+      border: 1px solid #334155;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer {
+      margin-top: 6px;
+      padding-top: 4px;
+      border-top: 1px solid #cbd5e1;
+      font-size: 6.8pt;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PÁGINA 1 ==================== -->
+  <div class="top-banner">
+    <div class="tag">CORELINK — PLANO DE INCREMENTO FUNCIONAL • NATIVIDADE-TO</div>
+    <h1>INTEGRAÇÃO B2B VIA WHATSAPP API E PÓS-VENDA (UC05)</h1>
+    <p>HJ Infor — Geração Automática de Link Parametrizado (ID do Pedido, Softwares Contratados e Razão Social)</p>
+    <div class="meta-row">
+      <div><strong>Caso de Uso</strong>UC05 — Pós-Venda WhatsApp</div>
+      <div><strong>Prioridade</strong>ALTA (Onboarding & Suporte B2B)</div>
+      <div><strong>Stack</strong>Next.js, TypeScript, Prisma, WhatsApp API</div>
+      <div><strong>Data de Execução</strong>18/10/2026</div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 1 -->
+  <div class="sec-title">
+    <span>1. Pendência Selecionada e Priorização</span>
+    <span class="sec-badge">Prioridade: ALTA</span>
+  </div>
+  <div class="info-box">
+    <p><strong>Funcionalidade Escolhida:</strong> Integração B2B via WhatsApp API (UC05) — Geração automática de link parametrizado para atendimento e pós-venda direto no WhatsApp comercial, enviando o ID do pedido, lista de softwares contratados e razão social da empresa cliente.</p>
+    <p style="margin-bottom: 0;"><strong>Justificativa Técnica:</strong> Na comercialização de sistemas de gestão e licenças corporativas (B2B), o pós-venda imediato (liberação de chaves, parametrização fiscal e treinamento de implantação) é determinante para a retenção do cliente. Anteriormente, o comprador precisava informar manualmente seus dados ao suporte. Com a construção do motor <code>src/lib/whatsapp.ts</code> integrado aos modelos <code>Order</code>, <code>Product</code> e <code>User</code> do Prisma ORM, o sistema compila dinamicamente o <strong>ID do pedido</strong>, a <strong>Razão Social (<code>companyName</code>)</strong>, o <strong>CNPJ/Inscrição Estadual</strong> e a <strong>lista numerada de softwares contratados</strong>, codificando o payload via <code>encodeURIComponent</code> diretamente para a API oficial do WhatsApp.</p>
+  </div>
+
+  <!-- SEÇÃO 2 -->
+  <div class="sec-title">
+    <span>2. Resultado Esperado e Comportamento Alcançado</span>
+    <span class="sec-badge">100% Homologado</span>
+  </div>
+  <div class="info-box">
+    <p style="margin-bottom: 0;">Assim que o cliente conclui uma compra em <code>/checkout/[id]</code> ou acessa <code>/minha-conta</code>, a aplicação disponibiliza botões inteligentes de <strong>Atendimento e Pós-Venda via WhatsApp Comercial (UC05)</strong>. Ao clicar, o navegador redireciona para <code>https://api.whatsapp.com/send?phone=...&amp;text=...</code> com o resumo corporativo completo já preenchido. Adicionalmente, no Painel Administrativo (<code>/admin/pedidos</code>), cada pedido conta com o botão <strong>Pós-Venda B2B</strong> que permite ao gestor da HJ Infor acionar ativamente a empresa compradora no WhatsApp informando o status atualizado da licença.</p>
+  </div>
+
+  <!-- SEÇÃO 3 -->
+  <div class="sec-title">
+    <span>3. Plano de Execução Detalhado</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 38%;">Atividade</th>
+        <th style="width: 22%;">Responsável</th>
+        <th style="width: 20%;">Tecnologias</th>
+        <th style="width: 10%;">Período</th>
+        <th style="width: 10%;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Motor de Links Parametrizados (<code>src/lib/whatsapp.ts</code>).</strong> Desenvolvimento dos construtores <code>buildCommercialWhatsAppUrl</code> e <code>buildAdminToClientWhatsAppUrl</code>.</td>
+        <td>Marques Ramirez</td>
+        <td>TypeScript, Node.js, URI Encoding, WhatsApp API</td>
+        <td>15/10 a 16/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Integração no Pós-Checkout e Minha Conta.</strong> Injeção da Razão Social (<code>companyName</code>), CNPJ, ID do pedido e lista de softwares em <code>CheckoutForm.tsx</code> e <code>minha-conta/page.tsx</code>.</td>
+        <td>Márcio Medrado</td>
+        <td>React 19, Next.js App Router, TailwindCSS</td>
+        <td>16/10 a 17/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Integração no Painel Admin e Carrinho B2B.</strong> Botão de pós-venda ativo em <code>/admin/pedidos</code> e fechamento de lote multi-software em <code>/carrinho</code>.</td>
+        <td>Marques Ramirez & Márcio Medrado</td>
+        <td>React.js, Prisma ORM, Lucide Icons</td>
+        <td>17/10 a 18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Testes de Codificação URI e Dados B2B.</strong> Validação do envio de caracteres especiais, moeda (R$), múltiplos softwares e Razão Social sem truncamento.</td>
+        <td>Taís Fernandes, Romildo & Vandelice</td>
+        <td>WhatsApp Web API, PostgreSQL, DevTools</td>
+        <td>18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Documentação Técnica e Evidências do UC05.</strong> Consolidação dos pontos de integração, captura do payload e geração do PDF executivo.</td>
+        <td>Andréa Ribeiro</td>
+        <td>Git, GitHub, Markdown, PDF Engine</td>
+        <td>18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SEÇÃO 4: PONTOS DE INTEGRAÇÃO NA PLATAFORMA -->
+  <div class="sec-title">
+    <span>4. Pontos de Disparo da Integração WhatsApp B2B na Plataforma</span>
+    <span class="sec-badge">4 Módulos Conectados</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 24%;">Módulo / Rota</th>
+        <th style="width: 22%;">Direção do Fluxo</th>
+        <th style="width: 30%;">Parâmetros Injetados Automaticamente</th>
+        <th style="width: 24%;">Objetivo Operacional</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Pós-Checkout Imediato</strong><br/><code>/checkout/[id]</code></td>
+        <td>Cliente ➔ Comercial HJ Infor</td>
+        <td>ID recém-gerado, Razão Social, CNPJ, Inscrição Estadual, Software e Valor Total.</td>
+        <td>Agilizar liberação da licença logo após o fechamento do pedido.</td>
+      </tr>
+      <tr>
+        <td><strong>Central Minha Conta</strong><br/><code>/minha-conta</code></td>
+        <td>Cliente ➔ Pós-Venda HJ Infor</td>
+        <td>ID do pedido principal + Lista consolidada de todos os softwares ativos e Razão Social.</td>
+        <td>Solicitar suporte de implantação, treinamento e onboarding B2B.</td>
+      </tr>
+      <tr>
+        <td><strong>Carrinho Corporativo</strong><br/><code>/carrinho</code></td>
+        <td>Cliente ➔ Consultor B2B</td>
+        <td>Código do lote + Lista numerada de múltiplos sistemas selecionados e subtotal.</td>
+        <td>Negociar faturamento de pacotes multi-licença corporativos.</td>
+      </tr>
+      <tr>
+        <td><strong>Gestão de Pedidos Admin</strong><br/><code>/admin/pedidos</code></td>
+        <td>Admin HJ Infor ➔ Empresa Cliente</td>
+        <td>Telefone do cliente, ID do pedido, Razão Social, Software e Status (<code>Completed/Processing</code>).</td>
+        <td>Contato ativo do gestor para entrega de chaves e acompanhamento.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Plano de Incremento Funcional (UC05 — Integração B2B via WhatsApp API)</span>
+    <span>Página 1 de 2</span>
+  </div>
+
+  <!-- ==================== PÁGINA 2 ==================== -->
+  <div class="page-break"></div>
+
+  <!-- SEÇÃO 5: EVIDÊNCIA VISUAL -->
+  <div class="sec-title" style="margin-top: 0;">
+    <span>5. Evidência Visual: Painel do Cliente (/minha-conta) e Payload no WhatsApp Comercial</span>
+    <span class="sec-badge">URI Parametrizada</span>
+  </div>
+
+  <div class="visual-grid">
+    <!-- Lado Esquerdo: Card em /minha-conta e /checkout -->
+    <div class="portal-card">
+      <div>
+        <div style="display:inline-block; background:rgba(16,185,129,0.2); border:1px solid rgba(16,185,129,0.4); color:#34d399; font-size:5.8pt; font-weight:800; padding:2px 7px; border-radius:99px; text-transform:uppercase; margin-bottom:5px;">
+          💬 Integração B2B via WhatsApp API (UC05)
+        </div>
+        <div style="font-size:8.5pt; font-weight:800; color:#fff; margin-bottom:4px;">
+          Atendimento Comercial e Pós-Venda Direto (B2B)
+        </div>
+        <div style="font-size:6.3pt; color:#cbd5e1; line-height:1.38; margin-bottom:8px;">
+          Envie automaticamente para a equipe da <strong>HJ Infor</strong> o resumo parametrizado contendo o <strong>ID do seu pedido (#CMUVWH2S)</strong>, a <strong>lista de softwares contratados (3 sistemas)</strong> e a <strong>Razão Social</strong> para liberação imediata.
+        </div>
+
+        <div style="background:#1e293b; border:1px solid #334155; border-radius:7px; padding:6px 8px; font-size:6.2pt; margin-bottom:8px;">
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid #334155; padding-bottom:3px; margin-bottom:3px;">
+            <span style="color:#94a3b8;">ID do Pedido Principal:</span>
+            <strong style="color:#60a5fa; font-family:monospace;">#CMUVWH2S</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid #334155; padding-bottom:3px; margin-bottom:3px;">
+            <span style="color:#94a3b8;">Razão Social da Empresa:</span>
+            <strong style="color:#fff;">HJ Infor Soluções LTDA</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#94a3b8;">Softwares Contratados:</span>
+            <strong style="color:#34d399;">CoreLink ERP + Nexus BI + melisma</strong>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#10b981; color:#052e16; font-weight:800; font-size:6.8pt; text-align:center; padding:6px 10px; border-radius:7px;">
+        💬 Iniciar Pós-Venda no WhatsApp Comercial (UC05) ↗
+      </div>
+    </div>
+
+    <!-- Lado Direito: Mensagem Recebida no WhatsApp -->
+    <div class="wa-card">
+      <div class="wa-header">
+        <div>
+          <div style="font-size:7.2pt; font-weight:800; color:#fff;">WhatsApp Comercial — HJ Infor</div>
+          <div style="font-size:5.8pt; color:#34d399;">● Online • Canal Oficial de Pós-Venda B2B</div>
+        </div>
+        <span style="font-size:5.8pt; background:#005c4b; color:#a7f3d0; padding:2px 6px; border-radius:4px; font-weight:700;">API wa.me</span>
+      </div>
+
+      <div class="wa-bubble">
+        <strong>*[CORELINK B2B — ATENDIMENTO E PÓS-VENDA]*</strong><br/><br/>
+        Olá, equipe comercial da <strong>*HJ Infor*</strong>! Gostaria de atendimento referente à contratação de software corporativo:<br/><br/>
+        🏢 <strong>*Razão Social / Empresa:*</strong> HJ Infor Soluções LTDA<br/>
+        👤 <strong>*Responsável:*</strong> Administrador (MrBatista)<br/>
+        📄 <strong>*CNPJ/CPF:*</strong> 12.345.678/0001-90<br/>
+        🔖 <strong>*ID do Pedido:*</strong> #CMUVWH2S<br/><br/>
+        💻 <strong>*Lista de Softwares Contratados:*</strong><br/>
+        1. [Pedido #CMUVWH2S] <strong>*CoreLink ERP Cloud Enterprise*</strong> (1 licença) — R$ 1.490,00<br/>
+        2. [Pedido #CMUVWG99] <strong>*Nexus BI &amp; Analytics Premium*</strong> (1 licença) — R$ 2.499,90<br/>
+        3. [Pedido #CMUVWF12] <strong>*melisma*</strong> (1 licença) — R$ 500,00<br/><br/>
+        💰 <strong>*Valor Total Consolidado:*</strong> R$ 4.489,90<br/><br/>
+        Aguardo orientações para liberação de chave de licença e onboarding técnico.
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 6: CÓDIGO-FONTE E ESTRUTURA DE URL -->
+  <div class="sec-title">
+    <span>6. Implementação Técnica (src/lib/whatsapp.ts) e URL Parametrizada Gerada</span>
+    <span class="sec-badge">RFC 3986 URI Encoding</span>
+  </div>
+
+  <div class="two-col-logs">
+    <div>
+      <div style="font-size: 7.2pt; font-weight: 700; margin-bottom: 3px; color: #065f46;">6.1 Construtor Parametrizado em src/lib/whatsapp.ts</div>
+      <div class="code-box">export function buildCommercialWhatsAppUrl(
+  payload: WhatsAppB2BPayload,
+  commercialPhone: string = HJ_INFOR_COMMERCIAL_WHATSAPP
+): string {
+  const cleanPhone = commercialPhone.replace(/\D/g, "");
+  const softwaresList = payload.softwares
+    .map((item, idx) =>
+      `${idx + 1}. [Pedido #${item.orderId?.slice(0, 8).toUpperCase()}] ` +
+      `*${item.softwareName}* (${item.quantity} licença(s))`
+    )
+    .join("\n");
+
+  const lines = [
+    `*[CORELINK B2B — ATENDIMENTO E PÓS-VENDA]*`,
+    `🏢 *Razão Social / Empresa:* ${payload.companyName}`,
+    `🔖 *ID do Pedido:* #${payload.orderId.slice(0, 8).toUpperCase()}`,
+    `💻 *Lista de Softwares Contratados:*`,
+    softwaresList,
+  ];
+  return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(lines.join("\n"))}`;
+}</div>
+    </div>
+
+    <div>
+      <div style="font-size: 7.2pt; font-weight: 700; margin-bottom: 3px; color: #065f46;">6.2 Exemplo de Link Deep-Link Gerado (Inspeção de Rede)</div>
+      <div class="code-box">=========================================================
+  AUDITORIA DE URL GERADA - WHATSAPP API (UC05)
+=========================================================
+ENDPOINT OFICIAL:
+https://api.whatsapp.com/send
+
+QUERY PARAMETERS:
+phone = 5563999999999
+text  = *%5BCORELINK%20B2B%20%E2%80%94%20ATENDIMENTO%20E
+        %20P%C3%93S-VENDA%5D*%0A%0AOl%C3%A1%2C%20equipe
+        %20comercial%20da%20*HJ%20Infor*!...
+        %F0%9F%8F%A2%20*Raz%C3%A3o%20Social%20%2F%20Empr
+        esa%3A*%20HJ%20Infor%20Solu%C3%A7%C3%B5es%20LTDA
+        %0A%F0%9F%94%96%20*ID%20do%20Pedido%3A*%20%23CMU
+        VWH2S%0A%0A%F0%9F%92%BB%20*Lista%20de%20Software
+        s%20Contratados%3A*%0A1.%20%5BPedido%20%23CMUVWH
+        2S%5D%20*CoreLink%20ERP%20Cloud%20Enterprise*...
+=========================================================
+VALIDACAO DE PARAMETROS OBRIGATORIOS (UC05):
+[OK] ID do Pedido (#CMUVWH2S)
+[OK] Lista de Softwares Contratados (1..N itens)
+[OK] Razao Social da Empresa Cliente (companyName)</div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 7: ROTEIRO DE HOMOLOGAÇÃO -->
+  <div class="sec-title">
+    <span>7. Roteiro de Testes e Validação Funcional (UC05)</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 24%;">Cenário de Teste</th>
+        <th style="width: 36%;">Procedimento Realizado</th>
+        <th style="width: 40%;">Resultado Obtido na Homologação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Disparo Pós-Checkout</strong></td>
+        <td>Finalizar compra de um sistema em <code>/checkout/[id]</code> e clicar em <em>"Iniciar Pós-Venda no WhatsApp Comercial (UC05)"</em>.</td>
+        <td>Abertura imediata da API do WhatsApp contendo o ID recém-gravado no PostgreSQL, a Razão Social da empresa e o software adquirido.</td>
+      </tr>
+      <tr>
+        <td><strong>Lista Consolidada em Minha Conta</strong></td>
+        <td>Acessar <code>/minha-conta</code> com múltiplos pedidos ativos e clicar no botão principal do banner UC05.</td>
+        <td>Geração de link parametrizado listando todos os softwares contratados pela empresa, seus respectivos IDs e soma total em BRL.</td>
+      </tr>
+      <tr>
+        <td><strong>Atendimento Ativo pelo Admin</strong></td>
+        <td>Acessar <code>/admin/pedidos</code> e clicar no botão verde <em>"Pós-Venda B2B"</em> ao lado dos dados do cliente.</td>
+        <td>Abertura do WhatsApp direcionado ao telefone do cliente contendo ID do pedido, Razão Social, software e status atual da licença.</td>
+      </tr>
+      <tr>
+        <td><strong>Fallback de Razão Social</strong></td>
+        <td>Testar geração do link para cliente com <code>companyName</code> preenchido vs. cliente em fase de cadastro.</td>
+        <td>Prioriza o campo corporativo <code>user.companyName</code> (Razão Social) e aplica fallback seguro para <code>user.name</code> sem quebrar a URL.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Evidência de Conclusão de Incremento Funcional (UC05 — Integração B2B via WhatsApp API)</span>
+    <span>Página 2 de 2 • Autenticado via PostgreSQL & Prisma ORM</span>
+  </div>
+
+</body>
+</html>

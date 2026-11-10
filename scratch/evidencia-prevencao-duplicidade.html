@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Evidência — Prevenção de Requisições Duplicadas (isLoading) — CoreLink</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 8.2pt;
+      line-height: 1.36;
+      color: #1e293b;
+      background: #ffffff;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+
+    .banner-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #93c5fd;
+      font-size: 6.8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 5px;
+    }
+
+    .banner h1 {
+      font-size: 13.5pt;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 3px;
+      color: #ffffff;
+    }
+
+    .banner p {
+      font-size: 8pt;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+
+    .meta-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .meta-item span {
+      display: block;
+      font-size: 6.3pt;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-item strong {
+      font-size: 7.8pt;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border-left: 4px solid #2563eb;
+      padding: 5px 10px;
+      margin: 9px 0 6px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .section-title h2 {
+      font-size: 8.8pt;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge {
+      font-size: 6.8pt;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .badge-high {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .badge-blue {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 11px;
+      background: #ffffff;
+      margin-bottom: 7px;
+    }
+
+    .card p {
+      margin-bottom: 4px;
+      text-align: justify;
+    }
+
+    .card p:last-child {
+      margin-bottom: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 7px;
+      font-size: 7.7pt;
+    }
+
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+      text-align: left;
+      padding: 5px 8px;
+      font-size: 7.1pt;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .status-ok {
+      display: inline-block;
+      background: #dcfce7;
+      color: #15803d;
+      font-weight: 700;
+      font-size: 6.9pt;
+      padding: 1.5px 6px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .code-inline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.1pt;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Mockup Visual de UI & Telemetria (Página 2) */
+    .telemetry-panel {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 10px;
+      padding: 11px 14px;
+      margin-bottom: 8px;
+      border: 1px solid #1e293b;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .kpi-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      padding: 6px 9px;
+    }
+
+    .kpi-box .label {
+      font-size: 6.3pt;
+      text-transform: uppercase;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+
+    .kpi-box .val {
+      font-size: 11pt;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .val-amber { color: #fbbf24; }
+    .val-emerald { color: #34d399; }
+    .val-blue { color: #60a5fa; }
+    .val-purple { color: #c084fc; }
+
+    .ui-comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .ui-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      padding: 8px 10px;
+    }
+
+    .ui-box h4 {
+      font-size: 7.4pt;
+      color: #e2e8f0;
+      margin-bottom: 2px;
+      font-weight: 700;
+    }
+
+    .ui-box .sub {
+      font-size: 6.4pt;
+      color: #94a3b8;
+      margin-bottom: 7px;
+    }
+
+    .btn-mock {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 7px;
+      font-size: 7.4pt;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .btn-idle {
+      background: #2563eb;
+      color: #ffffff;
+      border: 1px solid #3b82f6;
+    }
+
+    .btn-loading {
+      background: rgba(37, 99, 235, 0.55);
+      color: #e2e8f0;
+      border: 1px dashed #60a5fa;
+    }
+
+    .admin-row-mock {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 5px 8px;
+      margin-bottom: 5px;
+      font-size: 7pt;
+    }
+
+    .pill-select {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid #f59e0b;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 6.6pt;
+    }
+
+    .pill-btn-saving {
+      background: #1e40af;
+      color: #93c5fd;
+      border: 1px solid #3b82f6;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 6.6pt;
+    }
+
+    .lock-note {
+      font-size: 6.5pt;
+      color: #60a5fa;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .two-col-code {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .code-card {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 7px;
+      padding: 7px 9px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 6.4pt;
+      line-height: 1.32;
+      border: 1px solid #1e293b;
+      overflow: hidden;
+    }
+
+    .code-header {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.2pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 3px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #cbd5e1;
+      padding-top: 5px;
+      margin-top: 6px;
+      font-size: 7pt;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PÁGINA 1 ==================== -->
+  <div class="banner">
+    <div class="banner-tag">CORELINK — PLANO DE INCREMENTO FUNCIONAL • NATIVIDADE-TO</div>
+    <h1>PREVENÇÃO DE REQUISIÇÕES DUPLICADAS (ISLOADING &amp; LOCK)</h1>
+    <p>HJ Infor — Controle de Estado Reativo, Trava Síncrona (useRef) e Idempotência no Checkout B2B e Painel Admin</p>
+    <div class="meta-strip">
+      <div class="meta-item">
+        <span>Módulo de Interface</span>
+        <strong>Checkout B2B &amp; Admin (UC04)</strong>
+      </div>
+      <div class="meta-item">
+        <span>Prioridade</span>
+        <strong>ALTA (Integridade &amp; UX)</strong>
+      </div>
+      <div class="meta-item">
+        <span>Stack</span>
+        <strong>React 19, Next.js, Prisma ORM</strong>
+      </div>
+      <div class="meta-item">
+        <span>Data de Execução</span>
+        <strong>18/10/2026</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>1. Pendência Selecionada e Priorização</h2>
+    <span class="badge badge-high">Prioridade: Alta</span>
+  </div>
+  <div class="card">
+    <p><strong>Funcionalidade Escolhida:</strong> Prevenção de Requisições Duplicadas — Adição de controle de estado (<span class="code-inline">isLoading</span>) nos botões de checkout e no formulário de status do Painel Admin, eliminando o envio repetido por duplo clique.</p>
+    <p><strong>Justificativa Técnica:</strong> Em fluxos críticos de e-commerce B2B, o acionamento repetido (<em>double-click</em>) de botões de submissão pode disparar requisições concorrentes antes que o ciclo assíncrono de renderização do React aplique o atributo <span class="code-inline">disabled</span> no DOM. Sem bloqueio imediato e idempotência no servidor, um duplo clique no checkout ou no Painel Admin geraria cobranças/pedidos duplicados no PostgreSQL, consumo dobrado de cupons, baixa múltipla de estoque e reenvio de e-mails transacionais.</p>
+  </div>
+
+  <div class="section-title">
+    <h2>2. Resultado Esperado e Comportamento Alcançado</h2>
+    <span class="badge badge-high">0% de Duplicidade</span>
+  </div>
+  <div class="card">
+    <p>Foi implementada uma defesa em <strong>3 camadas complementares</strong>: (1) <strong>Trava Síncrona Imediata (<span class="code-inline">useRef</span>)</strong> nos componentes <span class="code-inline">CheckoutForm.tsx</span>, <span class="code-inline">carrinho/page.tsx</span> e <span class="code-inline">OrderStatusControl.tsx</span> que intercepta cliques em menos de 1ms no mesmo <em>tick</em> do JavaScript; (2) <strong>Controle de Estado Reativo (<span class="code-inline">isLoading</span>)</strong> que desabilita botões e campos (<span class="code-inline">disabled</span>, <span class="code-inline">aria-busy</span>, <span class="code-inline">pointer-events-none</span>) exibindo spinner animado (<span class="code-inline">Loader2</span>); e (3) <strong>Guarda de Idempotência Server-Side (<span class="code-inline">order.ts</span>)</strong> com janela de 15s em <span class="code-inline">createOrder</span> e verificação de igualdade de estado em <span class="code-inline">updateOrderStatus</span>.</p>
+  </div>
+
+  <div class="section-title">
+    <h2>3. Plano de Execução Detalhado</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 34%;">Atividade</th>
+        <th style="width: 21%;">Responsável</th>
+        <th style="width: 21%;">Tecnologias</th>
+        <th style="width: 12%;">Período</th>
+        <th style="width: 12%;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Controle de Estado <span class="code-inline">isLoading</span> no Checkout.</strong> Implementação de <span class="code-inline">isLoading</span>, <span class="code-inline">isCouponLoading</span> e <span class="code-inline">checkoutLockRef</span> em <span class="code-inline">CheckoutForm.tsx</span> e <span class="code-inline">carrinho/page.tsx</span>.</td>
+        <td>Marques Ramirez</td>
+        <td>React 19 (<span class="code-inline">useState</span>, <span class="code-inline">useRef</span>), Tailwind CSS</td>
+        <td>16/10 a 17/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Bloqueio no Formulário de Status Admin.</strong> Conversão de <span class="code-inline">OrderStatusControl.tsx</span> para <span class="code-inline">&lt;form onSubmit&gt;</span> com <span class="code-inline">isLoading</span>, <span class="code-inline">submitLockRef</span> e trava <span class="code-inline">!hasChanged</span>.</td>
+        <td>Márcio Medrado</td>
+        <td>React 19, <span class="code-inline">useTransition</span>, Sonner Toast, Lucide</td>
+        <td>17/10 a 18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Guarda de Idempotência Server-Side (<span class="code-inline">order.ts</span>).</strong> Deduplicação de 15s em <span class="code-inline">createOrder</span> e bloqueio de re-execução para status idêntico em <span class="code-inline">updateOrderStatus</span>.</td>
+        <td>Marques Ramirez &amp; Márcio Medrado</td>
+        <td>Next.js Server Actions, Prisma ORM, PostgreSQL</td>
+        <td>18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Teste de Stress de Cliques Simultâneos.</strong> Execução do script <span class="code-inline">scripts/test-duplicate-prevention.mjs</span> simulando rajada de cliques concorrentes (&lt; 5ms).</td>
+        <td>Taís Fernandes, Romildo &amp; Vandelice</td>
+        <td>Node.js, Promises Concorrentes, PostgreSQL</td>
+        <td>18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Documentação Técnica e Relatório de Evidência.</strong> Consolidação dos trechos de código, logs de teste e geração do PDF A4 de 2 páginas.</td>
+        <td>Andréa Ribeiro</td>
+        <td>Git, GitHub, Markdown, PDF Engine</td>
+        <td>18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">
+    <h2>4. Especificação dos Mecanismos de Bloqueio por Componente</h2>
+    <span class="badge badge-blue">Defesa em 3 Camadas</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 26%;">Arquivo / Componente</th>
+        <th style="width: 26%;">Estados &amp; Travas Aplicadas</th>
+        <th style="width: 48%;">Papel na Eliminação do Envio Repetido por Duplo Clique</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="code-inline">CheckoutForm.tsx</span><br/>(Checkout de Software)</td>
+        <td><span class="code-inline">isLoading</span> + <span class="code-inline">checkoutLockRef</span><br/><span class="code-inline">isCouponLoading</span> + <span class="code-inline">couponLockRef</span></td>
+        <td>Desabilita imediatamente o botão <em>"Confirmar Pedido"</em>, o campo de cupom e o checkbox LGPD; exibe spinner <span class="code-inline">Loader2</span> (<em>"Processando Pedido..."</em>) e selo de bloqueio.</td>
+      </tr>
+      <tr>
+        <td><span class="code-inline">OrderStatusControl.tsx</span><br/>(Painel Admin — Pedidos)</td>
+        <td><span class="code-inline">isLoading</span> + <span class="code-inline">isPending</span><br/><span class="code-inline">submitLockRef</span> + <span class="code-inline">hasChanged</span></td>
+        <td>Envolve o controle em <span class="code-inline">&lt;form onSubmit&gt;</span>; desabilita <span class="code-inline">&lt;select&gt;</span> e botão <em>"Salvar"</em> durante o envio ou quando o status selecionado já está salvo no PostgreSQL.</td>
+      </tr>
+      <tr>
+        <td><span class="code-inline">carrinho/page.tsx</span><br/>(Carrinho B2B)</td>
+        <td><span class="code-inline">isLoading</span> + <span class="code-inline">checkoutNavLockRef</span></td>
+        <td>Substitui link estático por botão controlado; bloqueia cliques múltiplos e exclusão de itens enquanto redireciona (<em>"Redirecionando ao Checkout..."</em>).</td>
+      </tr>
+      <tr>
+        <td><span class="code-inline">src/actions/order.ts</span><br/>(Server Actions)</td>
+        <td><span class="code-inline">duplicateWindow (15s)</span><br/><span class="code-inline">previousStatus === newStatus</span></td>
+        <td>Garante idempotência no PostgreSQL: se duas requisições chegarem juntas, retorna o pedido existente (<span class="code-inline">deduplicated: true</span>) sem duplicar registro ou estoque.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Plano de Incremento Funcional (Prevenção de Requisições Duplicadas — isLoading &amp; Lock)</span>
+    <span>Página 1 de 2</span>
+  </div>
+
+  <!-- ==================== QUEBRA DE PÁGINA ==================== -->
+  <div class="page-break"></div>
+
+  <!-- ==================== PÁGINA 2 ==================== -->
+  <div class="section-title" style="margin-top: 0;">
+    <h2>5. Evidência Visual de Interface e Bloqueio de Cliques Concorrentes</h2>
+    <span class="badge badge-high">Validação Homologada</span>
+  </div>
+
+  <div class="telemetry-panel">
+    <div class="kpi-grid">
+      <div class="kpi-box">
+        <div class="label">Cliques Simultâneos (Teste)</div>
+        <div class="val val-amber">3 Cliques (&lt; 5ms)</div>
+      </div>
+      <div class="kpi-box">
+        <div class="label">Requisições Disparadas</div>
+        <div class="val val-emerald">1 Única Action</div>
+      </div>
+      <div class="kpi-box">
+        <div class="label">Cliques Duplicados Retidos</div>
+        <div class="val val-blue">2 Bloqueados (100%)</div>
+      </div>
+      <div class="kpi-box">
+        <div class="label">Janela de Idempotência DB</div>
+        <div class="val val-purple">15.000 ms (15s)</div>
+      </div>
+    </div>
+
+    <div class="ui-comparison-grid">
+      <div class="ui-box">
+        <h4>1. Botão de Checkout B2B (CheckoutForm.tsx)</h4>
+        <div class="sub">Transição instantânea de estado ao clicar em "Confirmar Pedido"</div>
+        <div class="btn-mock btn-idle">⚡ Confirmar Pedido (Estado Inicial — Habilitado)</div>
+        <div class="btn-mock btn-loading">⟳ Processando Pedido... (disabled=true | aria-busy=true)</div>
+        <div class="lock-note">🔒 Requisição em andamento — envio bloqueado contra duplo clique</div>
+      </div>
+
+      <div class="ui-box">
+        <h4>2. Formulário de Status no Painel Admin (OrderStatusControl.tsx)</h4>
+        <div class="sub">Bloqueio simultâneo do &lt;select&gt; e do botão submit durante persistência</div>
+        <div class="admin-row-mock">
+          <span class="pill-select">🕒 Processando (disabled)</span>
+          <span class="pill-btn-saving">⟳ Salvando... (disabled)</span>
+        </div>
+        <div class="admin-row-mock" style="border-color: #059669; background: rgba(16, 185, 129, 0.1);">
+          <span style="color: #34d399; font-weight: 700;">✓ Concluído (Completed)</span>
+          <span style="background: #059669; color: #fff; padding: 2px 8px; border-radius: 999px; font-weight: 700;">✓ Salvo!</span>
+        </div>
+        <div class="lock-note">🔒 Bloqueado contra duplo clique • Desabilitado quando !hasChanged</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>6. Implementação Técnica (CheckoutForm.tsx / OrderStatusControl.tsx) e Log de Teste</h2>
+    <span class="badge badge-blue">React 19 + Prisma ORM</span>
+  </div>
+
+  <div class="two-col-code">
+    <div>
+      <div class="code-header">6.1 Controle isLoading + Trava useRef (Checkout &amp; Admin)</div>
+      <pre class="code-card">// CheckoutForm.tsx — Bloqueio de Duplo Clique
+const [isLoading, setIsLoading] = useState(false);
+const checkoutLockRef = useRef(false);
+
+const handleCheckout = async (e?: React.FormEvent) =&gt; {
+  if (e) e.preventDefault();
+  if (checkoutLockRef.current || isLoading || !lgpdConsent) return;
+
+  checkoutLockRef.current = true;
+  setIsLoading(true);
+  const res = await createOrder(product.id, appliedCoupon?.id);
+  // ...
+};
+
+// OrderStatusControl.tsx — Formulário Admin
+const [isLoading, setIsLoading] = useState(false);
+const [isPending, startTransition] = useTransition();
+const submitLockRef = useRef(false);
+const busy = isLoading || isPending;
+
+const handleSubmit = (e: React.FormEvent) =&gt; {
+  e.preventDefault();
+  if (submitLockRef.current || busy || !hasChanged) return;
+  submitLockRef.current = true;
+  setIsLoading(true);
+  // ...
+};</pre>
+    </div>
+
+    <div>
+      <div class="code-header">6.2 Guarda Server-Side (order.ts) &amp; Log de Concorrência</div>
+      <pre class="code-card">// src/actions/order.ts — Janela de Idempotência (15s)
+const duplicateWindow = new Date(Date.now() - 15_000);
+const existingRecentOrder = await prisma.order.findFirst({
+  where: {
+    userId: session.user.id, productId: product.id,
+    status: "PENDING", createdAt: { gte: duplicateWindow },
+  },
+});
+if (existingRecentOrder) {
+  return { success: true, orderId: existingRecentOrder.id, deduplicated: true };
+}
+
+====================================================================
+ TESTE DE PREVENCAO DE REQUISICOES DUPLICADAS (ISLOADING + LOCK)
+====================================================================
+ [ACEITO]    Clique #1 iniciou requisicao (isLoading=true, lockRef=true)
+ [BLOQUEADO] Clique #2 rejeitado (isLoading=true, lockRef=true)
+ [BLOQUEADO] Clique #3 rejeitado (isLoading=true, lockRef=true)
+--------------------------------------------------------------------
+ Resultado UI: 1 requisicao enviada | 2 cliques duplicados bloqueados
+ Ultimo pedido verificado no PostgreSQL: #CMVE00WT (COMPLETED)
+====================================================================</pre>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>7. Roteiro de Validação e Testes de Homologação</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 24%;">Cenário de Teste</th>
+        <th style="width: 36%;">Procedimento Executado</th>
+        <th style="width: 40%;">Resultado Obtido na Homologação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Duplo Clique no Botão "Confirmar Pedido"</strong></td>
+        <td>Acionar rapidamente 3 cliques consecutivos no botão de submissão do <span class="code-inline">CheckoutForm.tsx</span>.</td>
+        <td>O 1º clique ativou <span class="code-inline">checkoutLockRef</span> e <span class="code-inline">isLoading=true</span> (spinner <em>"Processando Pedido..."</em>); os cliques #2 e #3 foram descartados com <strong>1 único pedido gravado</strong>.</td>
+      </tr>
+      <tr>
+        <td><strong>Duplo Clique no Formulário de Status Admin</strong></td>
+        <td>Selecionar <em>"Completed"</em> em <span class="code-inline">/admin/pedidos</span> e clicar repetidamente no botão <em>"Salvar"</em>.</td>
+        <td>O <span class="code-inline">&lt;select&gt;</span> e o botão entraram em estado <span class="code-inline">disabled</span> (<em>"Salvando..."</em> + selo de bloqueio), executando apenas 1 transação no Prisma ORM.</td>
+      </tr>
+      <tr>
+        <td><strong>Tentativa de Salvar Status Sem Alteração</strong></td>
+        <td>Manter o mesmo status já persistido no banco e verificar disponibilidade do botão <em>"Salvar"</em>.</td>
+        <td>Como <span class="code-inline">hasChanged === false</span> (<span class="code-inline">status === persistedStatus</span>), o botão permanece desabilitado, evitando queries <span class="code-inline">UPDATE</span> desnecessárias.</td>
+      </tr>
+      <tr>
+        <td><strong>Idempotência Server-Side (<span class="code-inline">order.ts</span>)</strong></td>
+        <td>Disparar duas chamadas concorrentes para <span class="code-inline">createOrder</span> e <span class="code-inline">updateOrderStatus</span> na mesma janela de 15s.</td>
+        <td>A Server Action identificou o registro recém-criado/atualizado e retornou <span class="code-inline">deduplicated: true</span> sem duplicar pedido, estoque ou e-mail.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Evidência de Conclusão de Incremento Funcional (Prevenção de Requisições Duplicadas)</span>
+    <span>Página 2 de 2 • Autenticado via React 19 &amp; Prisma ORM</span>
+  </div>
+
+</body>
+</html>

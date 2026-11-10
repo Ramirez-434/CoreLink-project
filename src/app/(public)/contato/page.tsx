@@ -18,6 +18,7 @@ export default async function ContatoPage() {
             Fale Conosco
           </span>
         </h1>
+        <img src="/images/tech-support.jpg" alt="Atendimento e suporte ao cliente" className="w-full max-w-sm mx-auto rounded-3xl shadow-lg mb-8" />
         <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
           Tem alguma dúvida ou precisa de suporte? Preencha o formulário abaixo e nossa equipe entrará em contato.
         </p>

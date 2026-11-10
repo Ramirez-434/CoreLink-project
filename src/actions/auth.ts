@@ -4,19 +4,43 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { sendWelcomeEmail } from "./email";
+import {
+  hasMaliciousInjection,
+  sanitizeTextInput,
+  sanitizeAndFormatPhone,
+} from "@/lib/sanitize";
 
 export async function registerUser(formData: FormData) {
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const phone = formData.get("phone") as string;
+  const rawName = (formData.get("name") as string) || "";
+  const rawEmail = ((formData.get("email") as string) || "").trim().toLowerCase();
+  const password = (formData.get("password") as string) || "";
+  const rawPhone = (formData.get("phone") as string) || "";
 
-  if (!name || !email || !password) {
+  if (!rawName || !rawEmail || !password) {
     return { error: "Preencha todos os campos obrigatórios." };
   }
 
+  if (hasMaliciousInjection(rawName) || hasMaliciousInjection(rawEmail) || hasMaliciousInjection(rawPhone)) {
+    return { error: "Entrada bloqueada: caracteres inválidos ou tentativa de injeção detectada." };
+  }
+
+  const name = sanitizeTextInput(rawName, 100);
+  if (name.length < 2) {
+    return { error: "Informe um nome válido com pelo menos 2 caracteres." };
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(rawEmail)) {
+    return { error: "Formato de e-mail inválido." };
+  }
+
+  const phoneCheck = sanitizeAndFormatPhone(rawPhone);
+  if (!phoneCheck.valid) {
+    return { error: phoneCheck.error || "Telefone inválido." };
+  }
+
   const existingUser = await prisma.user.findUnique({
-    where: { email }
+    where: { email: rawEmail },
   });
 
   if (existingUser) {
@@ -29,14 +53,13 @@ export async function registerUser(formData: FormData) {
     const user = await prisma.user.create({
       data: {
         name,
-        email,
-        phone,
+        email: rawEmail,
+        phone: phoneCheck.formatted || null,
         password: hashedPassword,
-        role: "USER"
-      }
+        role: "CUSTOMER",
+      },
     });
 
-    // Send Welcome Email
     await sendWelcomeEmail(user.email, user.name || "Cliente");
 
     revalidatePath("/admin/clientes");

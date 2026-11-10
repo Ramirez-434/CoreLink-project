@@ -7,5 +7,10 @@ export default async function ClientesPage() {
     orderBy: { createdAt: "desc" }
   });
 
-  return <ClientesManager initialUsers={users} />;
+  const typedUsers = users.map((u) => ({
+    ...u,
+    role: u.role as "ADMIN" | "CUSTOMER" | "EMPLOYEE",
+  }));
+
+  return <ClientesManager initialUsers={typedUsers} />;
 }

@@ -21,7 +21,8 @@ export default async function Home() {
 
       <div className="container relative z-10 mx-auto px-4 py-16 md:py-32">
         {/* Hero Section */}
-        <div className="max-w-3xl mb-16 pl-4 md:pl-12 animate-fade-in-up">
+        <div className="flex flex-col lg:flex-row items-center gap-12 mb-16">
+        <div className="max-w-3xl pl-4 md:pl-12 animate-fade-in-up lg:w-1/2">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
             <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-400 dark:from-blue-400 dark:via-indigo-300 dark:to-blue-200 text-transparent bg-clip-text animate-gradient-x">
               Soluções <br /> Empresariais
@@ -47,6 +48,14 @@ export default async function Home() {
               </Link>
             </div>
           )}
+        </div>
+        <div className="w-full lg:w-1/2 animate-fade-in-up">
+          <img
+            src="/images/tech-software.jpg"
+            alt="Ambiente de desenvolvimento de software com tecnologia em nuvem"
+            className="w-full rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 hover:scale-[1.02] transition-transform duration-500"
+          />
+        </div>
         </div>
 
         {/* Features / Products Cards */}
@@ -96,17 +105,36 @@ export default async function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { title: "Segurança", desc: "Seus dados criptografados e com backup automático diário na nuvem.", icon: "🔒" },
-            { title: "Velocidade", desc: "Sistema ultrarrápido que não trava e não te deixa esperando.", icon: "⚡" },
-            { title: "Suporte 24/7", desc: "Equipe especializada pronta para te ajudar a qualquer momento.", icon: "💬" },
-            { title: "Fácil de Usar", desc: "Interface intuitiva que não exige meses de treinamento para sua equipe.", icon: "✨" },
+            { title: "Segurança", desc: "Seus dados criptografados e com backup automático diário na nuvem.", image: "/images/card-seguranca.jpg", tag: "Proteção total", accent: "from-blue-500 to-indigo-500" },
+            { title: "Velocidade", desc: "Sistema ultrarrápido que não trava e não te deixa esperando.", image: "/images/card-velocidade.jpg", tag: "Alta performance", accent: "from-orange-400 to-pink-500" },
+            { title: "Suporte 24/7", desc: "Equipe especializada pronta para te ajudar a qualquer momento.", image: "/images/card-suporte.jpg", tag: "Sempre online", accent: "from-purple-500 to-blue-500" },
+            { title: "Fácil de Usar", desc: "Interface intuitiva que não exige meses de treinamento para sua equipe.", image: "/images/card-facil.jpg", tag: "Sem complicação", accent: "from-teal-400 to-blue-500" },
           ].map((feature, index) => (
-            <div key={index} className={`bg-white dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all hover-lift animate-fade-in-up delay-${(index + 1) * 100}`}>
-              <div className="text-4xl mb-4 bg-blue-50 dark:bg-blue-900/30 w-16 h-16 rounded-xl flex items-center justify-center">{feature.icon}</div>
-              <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
+            <div key={index} className={`group relative overflow-hidden bg-white dark:bg-gray-800/60 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-fade-in-up delay-${(index + 1) * 100}`}>
+              {/* Barra de destaque no topo */}
+              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.accent} z-20 opacity-80 group-hover:opacity-100`}></div>
+
+              {/* Imagem */}
+              <div className="relative h-44 overflow-hidden">
+                <img
+                  src={feature.image}
+                  alt={feature.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-gray-900 via-transparent to-transparent opacity-80"></div>
+                <span className={`absolute top-4 left-4 text-[11px] font-bold uppercase tracking-wider text-white px-3 py-1 rounded-full bg-gradient-to-r ${feature.accent} shadow-lg`}>
+                  {feature.tag}
+                </span>
+              </div>
+
+              {/* Conteúdo */}
+              <div className="p-6 pt-2">
+                <h4 className="text-xl font-extrabold text-gray-900 dark:text-white mb-2">{feature.title}</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -114,6 +142,8 @@ export default async function Home() {
 
       {/* Bottom CTA */}
       <div className="mt-32 mb-16 relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 p-12 text-center shadow-2xl animate-fade-in-up delay-200">
+        {/* Imagem de fundo tecnológica */}
+        <img src="/images/tech-hero.jpg" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none" />
         {/* Orbs inside CTA */}
         <div className="absolute top-0 -left-12 w-64 h-64 bg-blue-500 rounded-full mix-blend-screen filter blur-[80px] opacity-40 animate-blob"></div>
         <div className="absolute bottom-0 -right-12 w-64 h-64 bg-purple-500 rounded-full mix-blend-screen filter blur-[80px] opacity-40 animate-blob animation-delay-2000"></div>

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CORELINK — Plano de Incremento Funcional (UC04)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.35;
+      font-size: 8.2pt;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* CABEÇALHO INSTITUCIONAL E TÉCNICO */
+    .top-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 65%, #2563eb 100%);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .top-banner .tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.16);
+      color: #93c5fd;
+      font-size: 6.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-bottom: 4px;
+    }
+
+    .top-banner h1 {
+      font-size: 13.8pt;
+      font-weight: 800;
+      margin: 0 0 2px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .top-banner p {
+      font-size: 8pt;
+      color: #dbeafe;
+      margin: 0 0 7px 0;
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: 7pt;
+    }
+
+    .meta-row div strong {
+      display: block;
+      color: #93c5fd;
+      font-size: 6pt;
+      text-transform: uppercase;
+    }
+
+    /* TÍTULOS DE SEÇÃO */
+    .sec-title {
+      font-size: 9pt;
+      font-weight: 800;
+      color: #0f172a;
+      background: #f1f5f9;
+      border-left: 4px solid #2563eb;
+      padding: 4px 8px;
+      margin: 7px 0 5px 0;
+      border-radius: 0 5px 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sec-badge {
+      font-size: 6.5pt;
+      font-weight: 700;
+      background: #dcfce7;
+      color: #15803d;
+      padding: 1.5px 7px;
+      border-radius: 8px;
+    }
+
+    p {
+      margin: 0 0 4px 0;
+      text-align: justify;
+    }
+
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 7px;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+    }
+
+    /* TABELAS */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 4px 0 6px 0;
+      font-size: 7.4pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #1e293b;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 6.7pt;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .status-ok {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 700;
+      font-size: 6.4pt;
+      padding: 1px 5px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    /* MOCKUP FIEL DO PAINEL DE ANALYTICS RENDERIZADO */
+    .dashboard-frame {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin: 4px 0 6px 0;
+      border: 1px solid #334155;
+      page-break-inside: avoid;
+    }
+
+    .dash-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e293b;
+      padding: 5px 9px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      border: 1px solid #334155;
+    }
+
+    .dash-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .dash-kpi {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 4px 8px;
+    }
+
+    .dash-kpi span {
+      display: block;
+      font-size: 5.8pt;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .dash-kpi strong {
+      font-size: 9pt;
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .dash-charts-row {
+      display: grid;
+      grid-template-columns: 1.38fr 1fr;
+      gap: 8px;
+    }
+
+    .dash-chart-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+
+    /* LOGS E SQL */
+    .two-col-logs {
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .code-box {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 6.1pt;
+      line-height: 1.32;
+      white-space: pre-wrap;
+      border: 1px solid #334155;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer {
+      margin-top: 6px;
+      padding-top: 4px;
+      border-top: 1px solid #cbd5e1;
+      font-size: 6.8pt;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PÁGINA 1 ==================== -->
+  <div class="top-banner">
+    <div class="tag">CORELINK — PLANO DE INCREMENTO FUNCIONAL • NATIVIDADE-TO</div>
+    <h1>MÓDULO DE GRÁFICOS GERENCIAIS E ANALYTICS (UC04)</h1>
+    <p>HJ Infor — Plataforma de E-commerce B2B de Licenciamento de Softwares Corporativos</p>
+    <div class="meta-row">
+      <div><strong>Caso de Uso</strong>UC04 — Analytics Gerencial</div>
+      <div><strong>Prioridade</strong>ALTA (Decisão Executiva)</div>
+      <div><strong>Stack</strong>Next.js, React 19, Recharts, Prisma</div>
+      <div><strong>Data de Execução</strong>18/10/2026</div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 1 -->
+  <div class="sec-title">
+    <span>1. Pendência Selecionada e Priorização</span>
+    <span class="sec-badge">Prioridade: ALTA</span>
+  </div>
+  <div class="info-box">
+    <p><strong>Funcionalidade Escolhida:</strong> Módulo de Gráficos Gerenciais e Analytics (UC04) — Incorporação de gráficos interativos no Painel Administrativo em React.js, permitindo ao gestor da HJ Infor visualizar a evolução do faturamento acumulado e a distribuição de vendas por licença de software.</p>
+    <p style="margin-bottom: 0;"><strong>Justificativa Técnica:</strong> Nas sprints anteriores, o sistema consolidou a persistência transacional de pedidos (UC03) no PostgreSQL. Contudo, a tomada de decisão estratégica pelo gestor da HJ Infor demandava uma camada de inteligência analítica visual capaz de transformar os registros brutos da tabela <code>Order</code> em indicadores visuais imediatos. A implementação da curva progressiva de faturamento acumulado (<code>AreaChart</code> / <code>ComposedChart</code>) e do gráfico proporcional de participação por software (<code>PieChart Donut</code> / <code>BarChart</code>) elimina a necessidade de planilhas externas e oferece visibilidade em tempo real sobre a saúde financeira e o mix de produtos B2B.</p>
+  </div>
+
+  <!-- SEÇÃO 2 -->
+  <div class="sec-title">
+    <span>2. Resultado Esperado e Comportamento Alcançado</span>
+    <span class="sec-badge">100% Homologado</span>
+  </div>
+  <div class="info-box">
+    <p style="margin-bottom: 0;">Ao acessar a rota protegida <code>/admin/dashboard</code>, o back-end em Next.js executa a agregação cronológica via Prisma ORM no banco PostgreSQL (Neon Cloud), calculando o saldo progressivo acumulado (<code>runningCumulative</code>) e o agrupamento financeiro e quantitativo por licença de software. No front-end em React.js, o componente interativo <code>AdminCharts.tsx</code> (Recharts) renderiza os gráficos dinâmicos com controles em tempo real: alternância entre <strong>Acumulado + Período</strong>, <strong>Curva Acumulada Isolada</strong> e <strong>Volume de Pedidos</strong>, chaveamento entre <strong>Receita (R$)</strong> e <strong>Unidades de Licença</strong>, e filtro entre <strong>Faturamento Efetivado (COMPLETED)</strong> e <strong>Pipeline Bruto (Incluindo Pendentes)</strong>.</p>
+  </div>
+
+  <!-- SEÇÃO 3 -->
+  <div class="sec-title">
+    <span>3. Plano de Execução Detalhado</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 38%;">Atividade</th>
+        <th style="width: 22%;">Responsável</th>
+        <th style="width: 20%;">Tecnologias</th>
+        <th style="width: 10%;">Período</th>
+        <th style="width: 10%;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Agregação Analítica Server-Side (UC04).</strong> Refatoração de <code>dashboard/page.tsx</code> para cálculo cronológico de faturamento acumulado e share por produto.</td>
+        <td>Marques Ramirez</td>
+        <td>Node.js, TypeScript, Prisma ORM, PostgreSQL</td>
+        <td>12/10 a 14/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Programação dos Gráficos Interativos Recharts.</strong> Construção do componente <code>AdminCharts.tsx</code> com ComposedChart, AreaChart, Donut PieChart e seletores de estado.</td>
+        <td>Márcio Medrado</td>
+        <td>React 19, Recharts 3.8, TailwindCSS, Lucide</td>
+        <td>14/10 a 16/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Sincronização de Filtros Temporais.</strong> Integração do seletor de período (7 dias, 30 dias e Todo o Período) com recálculo automático das séries e exportação CSV.</td>
+        <td>Marques Ramirez & Márcio Medrado</td>
+        <td>Next.js App Router, URL SearchParams</td>
+        <td>16/10 a 17/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Auditoria de Dados e Simulação Multi-Licença.</strong> Validação cruzada entre os somatórios SQL do PostgreSQL e os pontos plotados nos gráficos.</td>
+        <td>Taís Fernandes, Romildo & Vandelice</td>
+        <td>PostgreSQL, Neon Cloud, Scripts Node.js</td>
+        <td>17/10 a 18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Documentação Técnica e Evidências do UC04.</strong> Consolidação dos logs de banco, queries analíticas e geração do relatório formal em PDF.</td>
+        <td>Andréa Ribeiro</td>
+        <td>Git, GitHub, Markdown, PDF Engine</td>
+        <td>18/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SEÇÃO 4: TABELA CONSOLIDADA DE DISTRIBUIÇÃO POR LICENÇA -->
+  <div class="sec-title">
+    <span>4. Distribuição Consolidada de Vendas por Licença de Software</span>
+    <span class="sec-badge">Mix B2B Validado</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 34%;">Licença de Software (Catálogo B2B)</th>
+        <th style="width: 14%;">Valor Unitário</th>
+        <th style="width: 16%;">Qtd. Efetivada</th>
+        <th style="width: 18%;">Receita Gerada (R$)</th>
+        <th style="width: 18%;">Participação (Share)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>CoreLink ERP Cloud Enterprise</strong></td>
+        <td>R$ 1.490,00</td>
+        <td>3 licenças</td>
+        <td><strong>R$ 4.470,00</strong></td>
+        <td><span class="status-ok">52,8% (Líder)</span></td>
+      </tr>
+      <tr>
+        <td><strong>Nexus BI & Analytics Premium</strong></td>
+        <td>R$ 2.499,90</td>
+        <td>1 licença</td>
+        <td><strong>R$ 2.499,90</strong></td>
+        <td><span class="status-ok">29,5%</span></td>
+      </tr>
+      <tr>
+        <td><strong>melisma</strong></td>
+        <td>R$ 500,00</td>
+        <td>3 licenças (+2 pend.)</td>
+        <td><strong>R$ 1.500,00</strong></td>
+        <td><span class="status-ok">17,7%</span></td>
+      </tr>
+      <tr>
+        <td><strong>hack</strong></td>
+        <td>R$ 50,00</td>
+        <td>1 licença (Cupom 100%)</td>
+        <td><strong>R$ 0,00</strong></td>
+        <td>0,0%</td>
+      </tr>
+      <tr style="background: #eff6ff; font-weight: 800;">
+        <td><strong>TOTAL ACUMULADO NO PERÍODO</strong></td>
+        <td>—</td>
+        <td><strong>8 licenças ativas</strong></td>
+        <td><strong>R$ 8.469,90</strong></td>
+        <td><strong>100,0%</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Plano de Incremento Funcional (UC04 — Gráficos Gerenciais e Analytics)</span>
+    <span>Página 1 de 2</span>
+  </div>
+
+  <!-- ==================== PÁGINA 2 ==================== -->
+  <div class="page-break"></div>
+
+  <!-- SEÇÃO 5: EVIDÊNCIA VISUAL -->
+  <div class="sec-title" style="margin-top: 0;">
+    <span>5. Evidência Visual do Painel Administrativo Renderizado (/admin/dashboard)</span>
+    <span class="sec-badge">Recharts 3.8 Ativo</span>
+  </div>
+
+  <div class="dashboard-frame">
+    <div class="dash-top-bar">
+      <div>
+        <div style="font-size: 7.5pt; font-weight: 800; color: #fff;">Módulo de Gráficos Gerenciais e Analytics <span style="background:#1d4ed8; color:#bfdbfe; padding:1px 5px; border-radius:6px; font-size:5.8pt; margin-left:4px;">UC04 • Todo o Período</span></div>
+        <div style="font-size: 6pt; color: #94a3b8;">Acompanhamento interativo da curva de faturamento acumulado e participação por licença de software.</div>
+      </div>
+      <div style="display:flex; gap:4px; background:#0f172a; padding:2px; border-radius:5px; font-size:5.8pt;">
+        <span style="background:#1e293b; color:#34d399; padding:2px 6px; border-radius:4px; font-weight:700;">✓ Faturamento Efetivado</span>
+        <span style="color:#94a3b8; padding:2px 6px;">Incluir Pendentes (Bruto)</span>
+      </div>
+    </div>
+
+    <div class="dash-kpi-row">
+      <div class="dash-kpi"><span>Faturamento Acumulado</span><strong style="color:#60a5fa;">R$ 8.469,90</strong></div>
+      <div class="dash-kpi"><span>Ticket Médio Aprovado</span><strong style="color:#34d399;">R$ 1.209,99</strong></div>
+      <div class="dash-kpi"><span>Total de Pedidos</span><strong>11 Pedidos (7 Concl.)</strong></div>
+      <div class="dash-kpi"><span>Licenças Comercializadas</span><strong style="color:#c084fc;">8 Licenças B2B</strong></div>
+    </div>
+
+    <div class="dash-charts-row">
+      <div class="dash-chart-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+          <div>
+            <div style="font-size:7.2pt; font-weight:700; color:#fff;">Evolução do Faturamento Acumulado</div>
+            <div style="font-size:5.8pt; color:#94a3b8;">Acumulado no período: <strong style="color:#60a5fa;">R$ 8.469,90</strong></div>
+          </div>
+          <div style="font-size:5.6pt; background:#0f172a; padding:2px 5px; border-radius:4px; color:#60a5fa; font-weight:700;">Acumulado + Período</div>
+        </div>
+        <svg viewBox="0 0 360 100" width="100%" height="90">
+          <defs>
+            <linearGradient id="cGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <line x1="38" y1="12" x2="348" y2="12" stroke="#334155" stroke-dasharray="2 2"/>
+          <line x1="38" y1="36" x2="348" y2="36" stroke="#334155" stroke-dasharray="2 2"/>
+          <line x1="38" y1="60" x2="348" y2="60" stroke="#334155" stroke-dasharray="2 2"/>
+          <line x1="38" y1="84" x2="348" y2="84" stroke="#475569"/>
+          <text x="34" y="15" font-size="5.8" fill="#94a3b8" text-anchor="end">R$ 9k</text>
+          <text x="34" y="39" font-size="5.8" fill="#94a3b8" text-anchor="end">R$ 6k</text>
+          <text x="34" y="63" font-size="5.8" fill="#94a3b8" text-anchor="end">R$ 3k</text>
+          <text x="34" y="86" font-size="5.8" fill="#94a3b8" text-anchor="end">R$ 0</text>
+          <rect x="49" y="79" width="14" height="5" rx="2" fill="#10b981"/>
+          <rect x="103" y="79" width="14" height="5" rx="2" fill="#10b981"/>
+          <rect x="157" y="59" width="14" height="25" rx="2" fill="#10b981"/>
+          <rect x="211" y="79" width="14" height="5" rx="2" fill="#10b981"/>
+          <rect x="265" y="63" width="14" height="21" rx="2" fill="#10b981"/>
+          <rect x="319" y="71" width="14" height="13" rx="2" fill="#10b981"/>
+          <polygon points="56,79 110,75 164,50 218,45 272,25 326,13 326,84 56,84" fill="url(#cGrad)"/>
+          <polyline fill="none" stroke="#3b82f6" stroke-width="2" points="56,79 110,75 164,50 218,45 272,25 326,13"/>
+          <circle cx="56" cy="79" r="2.6" fill="#3b82f6" stroke="#fff" stroke-width="1"/>
+          <circle cx="110" cy="75" r="2.6" fill="#3b82f6" stroke="#fff" stroke-width="1"/>
+          <circle cx="164" cy="50" r="2.6" fill="#3b82f6" stroke="#fff" stroke-width="1"/>
+          <circle cx="218" cy="45" r="2.6" fill="#3b82f6" stroke="#fff" stroke-width="1"/>
+          <circle cx="272" cy="25" r="2.6" fill="#3b82f6" stroke="#fff" stroke-width="1"/>
+          <circle cx="326" cy="13" r="3" fill="#3b82f6" stroke="#fff" stroke-width="1"/>
+          <text x="326" y="8" font-size="6" font-weight="bold" fill="#93c5fd" text-anchor="end">R$ 8.469,90</text>
+          <text x="56" y="94" font-size="5.8" fill="#94a3b8" text-anchor="middle">25/05</text>
+          <text x="110" y="94" font-size="5.8" fill="#94a3b8" text-anchor="middle">26/05</text>
+          <text x="164" y="94" font-size="5.8" fill="#94a3b8" text-anchor="middle">06/10</text>
+          <text x="218" y="94" font-size="5.8" fill="#94a3b8" text-anchor="middle">13/10</text>
+          <text x="272" y="94" font-size="5.8" fill="#94a3b8" text-anchor="middle">16/10</text>
+          <text x="326" y="94" font-size="5.8" fill="#94a3b8" text-anchor="middle">18/10</text>
+        </svg>
+      </div>
+
+      <div class="dash-chart-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+          <div>
+            <div style="font-size:7.2pt; font-weight:700; color:#fff;">Vendas por Licença de Software</div>
+            <div style="font-size:5.8pt; color:#94a3b8;">Distribuição proporcional B2B</div>
+          </div>
+          <div style="font-size:5.6pt; background:#0f172a; padding:2px 5px; border-radius:4px; color:#34d399; font-weight:700;">R$ • Donut</div>
+        </div>
+        <svg viewBox="0 0 250 100" width="100%" height="90">
+          <g transform="translate(52, 50) rotate(-90)">
+            <circle r="31" cx="0" cy="0" fill="transparent" stroke="#3b82f6" stroke-width="13" stroke-dasharray="102.8 194.8" stroke-dashoffset="0"/>
+            <circle r="31" cx="0" cy="0" fill="transparent" stroke="#10b981" stroke-width="13" stroke-dasharray="57.5 194.8" stroke-dashoffset="-102.8"/>
+            <circle r="31" cx="0" cy="0" fill="transparent" stroke="#8b5cf6" stroke-width="13" stroke-dasharray="34.5 194.8" stroke-dashoffset="-160.3"/>
+          </g>
+          <text x="52" y="48" font-size="6" font-weight="bold" fill="#fff" text-anchor="middle">SHARE</text>
+          <text x="52" y="57" font-size="6" font-weight="bold" fill="#60a5fa" text-anchor="middle">100%</text>
+
+          <rect x="106" y="14" width="7" height="7" rx="1.5" fill="#3b82f6"/>
+          <text x="117" y="20" font-size="6.3" font-weight="bold" fill="#f8fafc">CoreLink ERP (52,8%)</text>
+          <text x="117" y="28" font-size="5.8" fill="#94a3b8">R$ 4.470,00 • 3 licenças</text>
+
+          <rect x="106" y="42" width="7" height="7" rx="1.5" fill="#10b981"/>
+          <text x="117" y="48" font-size="6.3" font-weight="bold" fill="#f8fafc">Nexus BI (29,5%)</text>
+          <text x="117" y="56" font-size="5.8" fill="#94a3b8">R$ 2.499,90 • 1 licença</text>
+
+          <rect x="106" y="70" width="7" height="7" rx="1.5" fill="#8b5cf6"/>
+          <text x="117" y="76" font-size="6.3" font-weight="bold" fill="#f8fafc">melisma (17,7%)</text>
+          <text x="117" y="84" font-size="5.8" fill="#94a3b8">R$ 1.500,00 • 3 licenças</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 6: LOGS E QUERIES DO BANCO -->
+  <div class="sec-title">
+    <span>6. Evidências de Persistência — Logs e Consultas SQL (PostgreSQL)</span>
+    <span class="sec-badge">0 Violações FK</span>
+  </div>
+
+  <div class="two-col-logs">
+    <div>
+      <div style="font-size: 7.2pt; font-weight: 700; margin-bottom: 3px; color: #1e3a8a;">6.1 Log de Auditoria da Série Acumulada (Node.js + Prisma)</div>
+      <div class="code-box">==============================================================
+  AUDITORIA UC04 - EVOLUCAO DO FATURAMENTO ACUMULADO
+==============================================================
+Data       | Receita Dia | Acumulado   | Software
+-----------+-------------+-------------+----------------------
+25/05/2026 | +R$    0,00 | R$     0,00 | hack (Cupom 100%)
+25/05/2026 | +R$  500,00 | R$   500,00 | melisma (x1)
+26/05/2026 | +R$  500,00 | R$ 1.000,00 | melisma (x1)
+06/10/2026 | +R$ 2980,00 | R$ 3.980,00 | CoreLink ERP (x2)
+13/10/2026 | +R$  500,00 | R$ 4.480,00 | melisma (x1)
+16/10/2026 | +R$ 2499,90 | R$ 6.979,90 | Nexus BI Premium (x1)
+18/10/2026 | +R$ 1490,00 | R$ 8.469,90 | CoreLink ERP (x1)
+==============================================================
+RESUMO: 7 Pedidos COMPLETED | 2 PENDING | 2 CANCELLED
+FATURAMENTO EFETIVADO ACUMULADO: R$ 8.469,90
+PIPELINE BRUTO (COM PENDENTES):  R$ 9.469,90
+INTEGRIDADE FK (userId/productId): OK - 0 violacoes</div>
+    </div>
+
+    <div>
+      <div style="font-size: 7.2pt; font-weight: 700; margin-bottom: 3px; color: #1e3a8a;">6.2 Queries SQL Equivalentes no PostgreSQL</div>
+      <div class="code-box">-- 1. Evolução do Faturamento Acumulado (Window Function)
+SELECT
+  TO_CHAR(o."createdAt", 'DD/MM/YYYY') AS data,
+  SUM(o."totalAmount") AS receita_dia,
+  SUM(SUM(o."totalAmount")) OVER (
+    ORDER BY DATE(o."createdAt")
+  ) AS faturamento_acumulado
+FROM "Order" o
+WHERE o.status = 'COMPLETED'
+GROUP BY DATE(o."createdAt"), TO_CHAR(o."createdAt", 'DD/MM/YYYY')
+ORDER BY DATE(o."createdAt") ASC;
+
+-- 2. Distribuição de Vendas por Licença de Software
+SELECT
+  p.name AS licenca_software,
+  SUM(o.quantity) AS licencas_vendidas,
+  SUM(o."totalAmount") AS receita_total
+FROM "Order" o
+JOIN "Product" p ON p.id = o."productId"
+WHERE o.status = 'COMPLETED'
+GROUP BY p.id, p.name
+ORDER BY receita_total DESC;</div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 7: MATRIZ DE TESTES E CONTROLES INTERATIVOS -->
+  <div class="sec-title">
+    <span>7. Validação dos Controles Interativos do Módulo UC04 (React.js)</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 24%;">Controle Interativo</th>
+        <th style="width: 36%;">Ação do Gestor no Painel (/admin/dashboard)</th>
+        <th style="width: 40%;">Resposta Dinâmica da Interface (Recharts)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Modo: Acumulado + Período</strong></td>
+        <td>Selecionar a aba <em>"Acumulado + Período"</em> no Gráfico 1.</td>
+        <td>Renderiza <code>ComposedChart</code> combinando barras verdes da receita diária com a curva azul preenchida do faturamento acumulado.</td>
+      </tr>
+      <tr>
+        <td><strong>Modo: Curva Acumulada</strong></td>
+        <td>Selecionar a aba <em>"Curva Acumulada"</em> no Gráfico 1.</td>
+        <td>Renderiza <code>AreaChart</code> isolado destacando a inclinação do crescimento patrimonial de R$ 500,00 até R$ 8.469,90.</td>
+      </tr>
+      <tr>
+        <td><strong>Alternador Donut / Barras</strong></td>
+        <td>Clicar nos ícones de Rosca (<code>PieChart</code>) ou Barras (<code>BarChart</code>) no Gráfico 2.</td>
+        <td>Alterna instantaneamente a visualização da distribuição de vendas por licença de software mantendo a paleta de cores e tooltips.</td>
+      </tr>
+      <tr>
+        <td><strong>Métrica: R$ vs. Licenças</strong></td>
+        <td>Alternar entre os botões <em>"R$"</em> e <em>"Licenças"</em> no Gráfico 2.</td>
+        <td>Recalcula as fatias do gráfico por volume financeiro (CoreLink ERP 52,8%) ou por unidades físicas comercializadas (37,5% cada).</td>
+      </tr>
+      <tr>
+        <td><strong>Base: Efetivado vs. Bruto</strong></td>
+        <td>Alternar para <em>"Incluir Pendentes (Bruto)"</em> no topo do módulo UC04.</td>
+        <td>Incorpora imediatamente os pedidos com status <code>PENDING</code> nas curvas e percentuais, projetando R$ 9.469,90 de faturamento bruto.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Evidência de Conclusão de Incremento Funcional (UC04 — Gráficos Gerenciais e Analytics)</span>
+    <span>Página 2 de 2 • Autenticado via PostgreSQL & Prisma ORM</span>
+  </div>
+
+</body>
+</html>

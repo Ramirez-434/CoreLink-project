@@ -31,11 +31,7 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
           {/* Left: Media */}
           <div className="w-full lg:w-1/2 flex flex-col gap-6">
             <div className="w-full bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-8 flex items-center justify-center border border-gray-100 dark:border-gray-700 relative group overflow-hidden">
-              {product.imageUrl ? (
-                <img src={product.imageUrl} alt={product.name} className="w-full h-auto object-cover max-h-[400px] rounded-xl shadow-lg transform group-hover:scale-105 transition-transform duration-700" />
-              ) : (
-                <Monitor size={120} className="text-gray-300 dark:text-gray-600" />
-              )}
+              <img src={product.imageUrl || "/images/tech-product.jpg"} alt={product.name} className="w-full h-auto object-cover max-h-[400px] rounded-xl shadow-lg transform group-hover:scale-105 transition-transform duration-700" />
               {/* Optional: Add a "best seller" or "new" badge here later */}
             </div>
 

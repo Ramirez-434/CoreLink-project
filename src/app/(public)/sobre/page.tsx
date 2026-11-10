@@ -16,6 +16,8 @@ export default function SobrePage() {
         <p>
           A <strong>HJ Infor</strong> é uma empresa de tecnologia dedicada a transformar a maneira como pequenas e médias empresas gerenciam seus negócios. Desde nossa fundação, temos o compromisso de entregar sistemas inovadores, fáceis de usar e altamente eficientes.
         </p>
+
+        <img src="/images/tech-team.jpg" alt="Equipe de profissionais de TI colaborando" className="w-full rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800" />
         
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">Nossa Missão</h2>
         <p>
@@ -28,6 +30,9 @@ export default function SobrePage() {
           <li><strong>Suporte Dedicado:</strong> Nossa equipe está sempre pronta para ajudar você a tirar o máximo proveito das nossas soluções.</li>
           <li><strong>Simplicidade:</strong> Interfaces limpas e intuitivas, para que você não perca tempo aprendendo a usar o software.</li>
         </ul>
+
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">Segurança em primeiro lugar</h2>
+        <img src="/images/tech-security.jpg" alt="Escudo de segurança protegendo servidores e dados na nuvem" className="w-full rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800" />
       </div>
       </div>
     </div>

