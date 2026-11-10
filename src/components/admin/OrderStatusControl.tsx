@@ -120,7 +120,7 @@ export function OrderStatusControl({
               setJustSaved(false);
             }}
             aria-label={`Status do pedido ${shortId}`}
-            className={`text-xs font-bold pl-7 pr-3 py-1.5 rounded-full border-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${badgeStyles}`}
+            className={`text-xs font-bold pl-7 pr-3 py-2 min-h-[44px] rounded-full border-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${badgeStyles}`}
           >
             <option value="PENDING">Processando (Processing)</option>
             <option value="COMPLETED">Concluído (Completed)</option>
@@ -140,7 +140,7 @@ export function OrderStatusControl({
               ? "Selecione um novo status para habilitar o salvamento"
               : "Salvar novo status no PostgreSQL"
           }
-          className={`text-xs px-3.5 py-1.5 rounded-full font-bold flex items-center gap-1.5 transition-all shadow-sm ${
+          className={`text-xs px-4 py-2 min-h-[44px] rounded-full font-bold flex items-center gap-1.5 transition-all shadow-sm shrink-0 ${
             justSaved
               ? "bg-emerald-600 text-white"
               : hasChanged
@@ -165,13 +165,13 @@ export function OrderStatusControl({
       </div>
 
       {busy && (
-        <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1">
-          <Lock size={10} /> Bloqueado contra duplo clique...
+        <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1">
+          <Lock size={12} /> Bloqueado contra duplo clique...
         </span>
       )}
 
       {!busy && justSaved && (
-        <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 animate-fade-in">
+        <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 animate-fade-in">
           ✓ Status atualizado no PostgreSQL
         </span>
       )}

@@ -56,20 +56,20 @@ export default async function PedidosPage({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5">
+          <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shrink-0 tabular-nums min-h-[36px]">
             <CheckCircle2 size={14} />
-            {completedCount} Completed
+            {completedCount} Concluídos
           </span>
-          <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5">
+          <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shrink-0 tabular-nums min-h-[36px]">
             <Clock size={14} />
-            {processingCount} Processing
+            {processingCount} Em Implantação
           </span>
-          <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5">
+          <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shrink-0 tabular-nums min-h-[36px]">
             <XCircle size={14} />
-            {cancelledCount} Cancelled
+            {cancelledCount} Cancelados
           </span>
           {abandonedCartsCount > 0 && (
-            <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1">
+            <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shrink-0 tabular-nums min-h-[36px]">
               🛒 {abandonedCartsCount} Em espera (+2h)
             </span>
           )}
@@ -85,13 +85,13 @@ export default async function PedidosPage({
             name="q"
             defaultValue={q}
             placeholder="Buscar por cliente, e-mail, produto ou ID do pedido..."
-            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="w-full pl-11 pr-4 py-2.5 min-h-[44px] rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
           />
         </div>
         <select
           name="status"
           defaultValue={status}
-          className="px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className="px-4 py-2.5 min-h-[44px] rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm cursor-pointer"
         >
           <option value="">Todos os status</option>
           <option value="PENDING">Processando (Processing)</option>
@@ -100,14 +100,14 @@ export default async function PedidosPage({
         </select>
         <button
           type="submit"
-          className="px-6 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary-hover transition-colors"
+          className="px-6 py-2.5 min-h-[44px] rounded-xl bg-primary text-white font-bold hover:bg-primary-hover transition-colors text-sm shrink-0"
         >
           Filtrar
         </button>
         {(q || status) && (
           <a
             href="/admin/pedidos"
-            className="px-4 py-2.5 rounded-xl text-center text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="px-4 py-2.5 min-h-[44px] inline-flex items-center justify-center rounded-xl text-center text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm shrink-0"
           >
             Limpar
           </a>
@@ -117,7 +117,7 @@ export default async function PedidosPage({
             ...(q ? { q } : {}),
             ...(status ? { status } : {}),
           }).toString()}`}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gray-900 dark:bg-gray-700 text-white font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl bg-gray-900 dark:bg-gray-700 text-white font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors text-sm shrink-0"
         >
           <Download size={16} /> CSV
         </a>
@@ -161,10 +161,10 @@ export default async function PedidosPage({
                     key={order.id}
                     className="hover:bg-blue-50/50 dark:hover:bg-gray-700/50 transition-colors"
                   >
-                    <td className="p-4 text-xs font-mono font-bold text-gray-600 dark:text-gray-300">
+                    <td className="p-4 text-xs font-mono font-bold text-gray-600 dark:text-gray-300 tabular-nums">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>
-                    <td className="p-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                    <td className="p-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap tabular-nums">
                       {order.createdAt.toLocaleDateString("pt-BR", {
                         day: "2-digit",
                         month: "2-digit",
@@ -178,7 +178,7 @@ export default async function PedidosPage({
                         <div>
                           <span>{order.user?.companyName || order.user?.name || "Desconhecido"}</span>
                           {order.user?.companyName && order.user?.name && (
-                            <span className="block text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                            <span className="block text-xs font-medium text-blue-600 dark:text-blue-400">
                               Resp.: {order.user.name}
                             </span>
                           )}
@@ -202,7 +202,7 @@ export default async function PedidosPage({
                             })}
                             target="_blank"
                             rel="noreferrer"
-                            className="bg-green-500 hover:bg-green-600 text-white px-2.5 py-1.5 rounded-full transition-colors flex-shrink-0 flex items-center gap-1 text-[11px] font-bold shadow-sm"
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-full transition-colors shrink-0 flex items-center gap-1.5 text-xs font-bold shadow-sm min-h-[44px]"
                             title="Atendimento e Pós-Venda via WhatsApp API (UC05)"
                           >
                             <svg
@@ -223,7 +223,7 @@ export default async function PedidosPage({
                       </div>
                       {(order.status === "PENDING" || order.status === "PROCESSING") &&
                         order.createdAt < twoHoursAgo && (
-                          <span className="text-[10px] bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300 px-2 py-0.5 rounded-md mt-1 inline-block">
+                          <span className="text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 px-2.5 py-0.5 rounded-md mt-1 inline-block font-medium">
                             Aguardando aprovação (+2h)
                           </span>
                         )}
@@ -237,7 +237,7 @@ export default async function PedidosPage({
                         </span>
                       )}
                     </td>
-                    <td className="p-4 text-sm font-bold text-gray-900 dark:text-white">
+                    <td className="p-4 text-sm font-bold text-gray-900 dark:text-white tabular-nums">
                       {(order.totalAmount ?? (order.product?.price || 0)).toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",

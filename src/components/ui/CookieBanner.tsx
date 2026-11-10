@@ -46,19 +46,20 @@ export function CookieBanner() {
         <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3 shrink-0">
           <button 
             onClick={handleAcceptEssential}
-            className="px-5 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition-colors whitespace-nowrap"
+            className="px-5 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition-colors whitespace-nowrap min-h-[44px] flex items-center justify-center"
           >
             Apenas Essenciais
           </button>
           <button 
             onClick={handleAcceptAll}
-            className="px-5 py-2.5 text-sm font-bold text-white bg-primary hover:bg-blue-700 rounded-xl transition-colors shadow-md whitespace-nowrap hover-lift"
+            className="px-5 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primary-hover rounded-xl transition-colors shadow-sm whitespace-nowrap min-h-[44px] flex items-center justify-center"
           >
             Aceitar Todos
           </button>
           <button 
             onClick={() => setIsVisible(false)}
-            className="absolute top-4 right-4 md:hidden text-gray-400 hover:text-gray-600"
+            aria-label="Fechar aviso de cookies"
+            className="absolute top-3 right-3 md:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
           >
             <X size={20} />
           </button>

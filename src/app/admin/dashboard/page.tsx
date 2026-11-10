@@ -198,7 +198,7 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
               Faturamento Acumulado
             </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
               {totalRevenue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
             </p>
           </div>
@@ -209,7 +209,7 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
           </div>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Ticket Médio</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
               {ticketMedio.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
             </p>
           </div>
@@ -220,7 +220,7 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
           </div>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Total de Pedidos</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{ordersCount}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{ordersCount}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-4 hover:shadow-md transition-shadow">
@@ -231,7 +231,7 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
               Clientes Registrados
             </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{customersCount}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{customersCount}</p>
           </div>
         </div>
       </div>
@@ -269,10 +269,12 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-primary text-sm">
+                    <p className="font-bold text-primary text-sm tabular-nums">
                       {p.revenue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                     </p>
-                    <p className="text-[11px] text-gray-400">{p.shareRevenue}% da receita</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tabular-nums">
+                      {p.shareRevenue}% da receita
+                    </p>
                   </div>
                 </div>
               ))}
@@ -288,7 +290,7 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
             </h2>
             <a
               href={`/admin/pedidos/export${periodo !== "all" ? `?periodo=${periodo}` : ""}`}
-              className="flex items-center gap-2 bg-gray-900 dark:bg-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary dark:hover:bg-gray-600 transition-colors"
+              className="inline-flex items-center gap-2 bg-gray-900 dark:bg-gray-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-primary dark:hover:bg-gray-600 transition-colors min-h-[44px]"
             >
               <Download size={16} />
               Exportar CSV
@@ -303,7 +305,7 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
             <div className="overflow-x-auto p-4">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-600 rounded-lg">
+                  <tr className="bg-gray-50 dark:bg-gray-700/60 border-b border-gray-100 dark:border-gray-600 rounded-lg">
                     <th className="p-4 font-bold text-gray-700 dark:text-gray-300 text-sm">ID</th>
                     <th className="p-4 font-bold text-gray-700 dark:text-gray-300 text-sm">Data</th>
                     <th className="p-4 font-bold text-gray-700 dark:text-gray-300 text-sm">
@@ -315,7 +317,7 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
                     <th className="p-4 font-bold text-gray-700 dark:text-gray-300 text-sm">
                       Status
                     </th>
-                    <th className="p-4 font-bold text-gray-700 dark:text-gray-300 text-sm">
+                    <th className="p-4 font-bold text-gray-700 dark:text-gray-300 text-sm text-right">
                       Valor
                     </th>
                   </tr>
@@ -324,38 +326,41 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
                   {recentOrders.map((order) => (
                     <tr
                       key={order.id}
-                      className="hover:bg-blue-50/50 dark:hover:bg-gray-700 transition-colors"
+                      className="hover:bg-blue-50/50 dark:hover:bg-gray-700/40 transition-colors"
                     >
-                      <td className="p-4 text-xs text-gray-500 dark:text-gray-400">
-                        {order.id.slice(0, 8)}
+                      <td className="p-4 text-xs font-mono text-gray-500 dark:text-gray-400">
+                        #{order.id.slice(0, 8).toUpperCase()}
                       </td>
-                      <td className="p-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                      <td className="p-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap tabular-nums">
                         {order.createdAt.toLocaleDateString("pt-BR")}
                       </td>
                       <td className="p-4 text-sm font-bold text-gray-900 dark:text-white">
                         {order.user?.name || "Desconhecido"}
                       </td>
                       <td className="p-4 text-sm text-gray-700 dark:text-gray-300">
-                        {order.product?.name || "Produto Excluído"} (x{order.quantity})
+                        {order.product?.name || "Produto Excluído"}{" "}
+                        <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+                          (x{order.quantity})
+                        </span>
                       </td>
                       <td className="p-4 text-sm">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold ${
+                          className={`inline-flex items-center shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold ${
                             order.status === "COMPLETED"
-                              ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                              ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
                               : order.status === "CANCELLED"
-                              ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
-                              : "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400"
+                              ? "bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300"
+                              : "bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
                           }`}
                         >
                           {order.status === "COMPLETED"
-                            ? "Concluído"
+                            ? "Ativo"
                             : order.status === "CANCELLED"
                             ? "Cancelado"
-                            : "Pendente"}
+                            : "Em Implantação"}
                         </span>
                       </td>
-                      <td className="p-4 text-sm font-bold text-gray-900 dark:text-white">
+                      <td className="p-4 text-sm font-bold text-gray-900 dark:text-white text-right tabular-nums">
                         {(order.totalAmount ?? (order.product?.price || 0)).toLocaleString(
                           "pt-BR",
                           { style: "currency", currency: "BRL" }
@@ -402,13 +407,10 @@ export default async function AdminDashboard({
         <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/70 to-transparent"></div>
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-8 md:p-10">
           <div>
-            <p className="text-blue-300 text-sm font-bold uppercase tracking-wider mb-1">
-              Painel administrativo
-            </p>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Dashboard & Analytics
             </h1>
-            <p className="text-gray-300 mt-2 text-sm max-w-md">
+            <p className="text-gray-300 mt-2 text-sm max-w-md leading-relaxed">
               Acompanhe a evolução do faturamento acumulado e a distribuição de vendas por licença de software em tempo real.
             </p>
           </div>

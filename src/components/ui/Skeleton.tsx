@@ -51,9 +51,9 @@ export function CatalogCardSkeleton() {
       </div>
 
       {/* Botões de Ação (Saiba Mais + Adicionar ao Carrinho) */}
-      <div className="space-y-3">
-        <Skeleton className="h-11 w-full rounded-full" />
-        <Skeleton className="h-10 w-full rounded-full" />
+      <div className="space-y-2.5">
+        <Skeleton className="h-11 w-full rounded-xl" />
+        <Skeleton className="h-11 w-full rounded-xl" />
       </div>
     </div>
   );

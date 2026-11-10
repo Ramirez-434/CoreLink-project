@@ -20,6 +20,21 @@ html, body {
 body {
   @apply transition-colors duration-300;
   font-family: var(--font-sans), sans-serif;
+  caret-color: var(--color-primary);
+}
+
+::selection {
+  background-color: rgba(37, 99, 235, 0.18);
+  color: inherit;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+.font-mono,
+[role="progressbar"] + span {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Custom Utilities for Glassmorphism */
@@ -80,8 +95,65 @@ body {
 .hover-lift {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
 }
-.hover-lift:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.15), 0 8px 10px -6px rgba(37, 99, 235, 0.1);
-  border-color: rgba(37, 99, 235, 0.3);
+
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.15), 0 8px 10px -6px rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .hover-lift:active {
+    transform: scale(0.99);
+  }
+}
+
+/* Prevent iOS Safari automatic viewport zoom on form inputs on narrow screens */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+}
+
+/* Consistent keyboard focus-visible ring across interactive elements */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--color-primary, #2563EB);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-gradient-x,
+  .animate-blob {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hover-lift,
+  .hover-lift:hover {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+@media print {
+  header,
+  footer,
+  nav,
+  #tour-perfil,
+  #tour-whatsapp {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #0F172A !important;
+  }
 }

@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T13:49:15.000Z",
+  "title": "Design System: CoreLink (HJ Infor)",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Azul Royal Tecnológico",
+        "canonical": "#2563EB",
+        "tonalRamp": ["#1E3A8A", "#1E40AF", "#1D4ED8", "#2563EB", "#3B82F6", "#60A5FA", "#93C5FD", "#DBEAFE"]
+      },
+      "secondary": {
+        "role": "secondary",
+        "displayName": "Slate Corporativo",
+        "canonical": "#0F172A",
+        "tonalRamp": ["#020617", "#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#F1F5F9"]
+      },
+      "emerald-accent": {
+        "role": "accent",
+        "displayName": "Esmeralda Ativação",
+        "canonical": "#059669",
+        "tonalRamp": ["#064E3B", "#065F46", "#047857", "#059669", "#10B981", "#34D399", "#A7F3D0", "#ECFDF5"]
+      },
+      "amber-accent": {
+        "role": "accent",
+        "displayName": "Âmbar Atenção Fiscal",
+        "canonical": "#D97706",
+        "tonalRamp": ["#78350F", "#92400E", "#B45309", "#D97706", "#F59E0B", "#FBBF24", "#FDE68A", "#FFFBEB"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Títulos institucionais e heros de apresentação." },
+      "headline": { "displayName": "Headline", "purpose": "Títulos de páginas e seções principais." },
+      "title": { "displayName": "Title", "purpose": "Títulos de cartões de software e modais." },
+      "body": { "displayName": "Body", "purpose": "Parágrafos, formulários e textos descritivos." },
+      "label": { "displayName": "Label", "purpose": "Distintivos de status, tags e metadados fiscais." }
+    },
+    "shadows": [
+      { "name": "card-rest", "value": "0 1px 3px 0 rgba(0, 0, 0, 0.05)", "purpose": "Elevação sutil em repouso para cartões." },
+      { "name": "hover-lift", "value": "0 20px 25px -5px rgba(37, 99, 235, 0.15), 0 8px 10px -6px rgba(37, 99, 235, 0.1)", "purpose": "Elevação tátil ao pairar sobre cartões interativos em dispositivos com mouse." },
+      { "name": "floating-popover", "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)", "purpose": "Popovers de tour guiado e modais de confirmação." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Curva de transição e elevação dos componentes." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botão Primário de Ação",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ação principal em formulários e CTAs do painel corporativo.",
+      "html": "<button class=\"ds-btn-primary\">Salvar Alterações</button>",
+      "css": ".ds-btn-primary { background: #2563EB; color: #ffffff; padding: 12px 24px; font-weight: 700; font-size: 14px; border: none; border-radius: 12px; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background-color 0.2s, transform 0.2s; } .ds-btn-primary:hover { background: #1D4ED8; } .ds-btn-primary:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+    },
+    {
+      "name": "Botão Secundário / Voltar",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ação secundária neutra com alvo de toque de 44px.",
+      "html": "<button class=\"ds-btn-secondary\">Voltar ao Painel</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: #374151; padding: 12px 20px; font-weight: 700; font-size: 14px; border: 1px solid #D1D5DB; border-radius: 12px; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background-color 0.2s; } .ds-btn-secondary:hover { background: #F3F4F6; } .ds-btn-secondary:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+    },
+    {
+      "name": "Cartão de Software",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Contêiner padrão para exibição de licenças e produtos contratados.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-title\">Sistema ERP Gestão</div><div class=\"ds-card-desc\">Pedido #8FA291B0 • 1 licença ativa</div></div>",
+      "css": ".ds-card { background: #ffffff; border: 1px solid #E5E7EB; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); } .ds-card-title { font-weight: 700; font-size: 18px; color: #111827; } .ds-card-desc { font-size: 12px; color: #6B7280; margin-top: 4px; font-family: monospace; }"
+    },
+    {
+      "name": "Pílula de Status (Ativo)",
+      "kind": "chip",
+      "refersTo": "status-chip",
+      "description": "Distintivo cromático com ícone semântico para indicar status da licença.",
+      "html": "<span class=\"ds-chip-active\">● Ativo</span>",
+      "css": ".ds-chip-active { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #ECFDF5; color: #047857; white-space: nowrap; }"
+    },
+    {
+      "name": "Campo de Entrada de Texto",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Input padrão de formulário com anel de foco e suporte a mobile.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Razão Social da Empresa\" />",
+      "css": ".ds-input { width: 100%; padding: 12px 16px; font-size: 14px; border: 1px solid #D1D5DB; border-radius: 12px; background: #ffffff; color: #111827; box-sizing: border-box; } .ds-input:focus { outline: none; border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "O Hub Tecnológico Confiável",
+    "overview": "O CoreLink adota uma linguagem visual sólida, moderna e acessível, projetada para transmitir autoridade e transparência a proprietários e gestores de pequenas e médias empresas (PMEs) brasileiras. A interface combina a energia do azul royal tecnológico (#2563EB) com a sobriedade do slate escuro (#0F172A), criando um ambiente corporativo limpo tanto no modo claro quanto no modo escuro.",
+    "keyCharacteristics": [
+      "Clareza Corporativa com tipografia Inter e alinhamento numérico tabular",
+      "Feedback Tátil Imediato com cantos arredondados amigáveis (12px a 16px) e hover-lift",
+      "Disfarce Zero de Estado com pílulas cromáticas explícitas"
+    ],
+    "rules": [
+      {
+        "name": "A Regra da Ação Primária Única",
+        "body": "Cada viewport deve conter no máximo um botão primário com fundo azul royal preenchido (#2563EB). Ações secundárias usam estilo tonal, outline ou link.",
+        "section": "colors"
+      },
+      {
+        "name": "A Regra dos Números Tabulares",
+        "body": "Todos os valores monetários, identificadores de pedido e porcentagens devem renderizar com tabular-nums.",
+        "section": "typography"
+      },
+      {
+        "name": "A Regra da Elevação Condicionada",
+        "body": "Elementos de tela não devem levitar em repouso. Sombras estruturais pronunciadas só aparecem como resposta direta ao estado do usuário.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Manter todos os alvos de clique e toque com pelo menos 44px de altura.",
+      "Formatar valores monetários, percentuais e identificadores com tabular-nums.",
+      "Validar documentos cadastrais (CNPJ/CPF) pelo algoritmo oficial Módulo 11 antes de submeter.",
+      "Preservar a integridade do modo escuro em todas as novas superfícies.",
+      "Fornecer feedback imediato por toast após ações concluídas ou descartadas."
+    ],
+    "donts": [
+      "Exibir mensagens de erro inline de validação antes do usuário terminar de digitar e sair do campo (onBlur).",
+      "Utilizar texto com gradiente colorido ou kickers decorativos redundantes sobre cabeçalhos formais.",
+      "Bloquear o acesso ao painel do cliente exigindo dados fiscais completos logo no primeiro cadastro.",
+      "Utilizar animações contínuas quando o usuário solicitar redução de movimento.",
+      "Criar links de WhatsApp sem parametrizar o número do pedido, razão social e lista de sistemas contratados."
+    ]
+  }
+}
+

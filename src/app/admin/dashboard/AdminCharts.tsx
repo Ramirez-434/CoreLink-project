@@ -48,7 +48,7 @@ interface AdminChartsProps {
   periodoLabel: string;
 }
 
-const COLORS = ["#2563EB", "#10B981", "#8B5CF6", "#F59E0B", "#EC4899", "#06B6D4"];
+const COLORS = ["#2563EB", "#059669", "#D97706", "#0F172A", "#1D4ED8", "#10B981"];
 
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -121,10 +121,10 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
           <button
             type="button"
             onClick={() => setIncludePending(false)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all min-h-[38px] sm:min-h-[44px] ${
               !includePending
                 ? "bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 shadow-sm"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
             <CheckCircle2 size={14} />
@@ -133,10 +133,10 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
           <button
             type="button"
             onClick={() => setIncludePending(true)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all min-h-[38px] sm:min-h-[44px] ${
               includePending
                 ? "bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
             <Clock size={14} />
@@ -152,12 +152,12 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 text-balance leading-snug">
                   Evolução do Faturamento Acumulado
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 text-balance">
                   Acumulado no período:{" "}
-                  <strong className="text-blue-600 dark:text-blue-400 font-extrabold">
+                  <strong className="text-primary dark:text-blue-400 font-extrabold tabular-nums">
                     {formatBRL(currentCumulativeTotal)}
                   </strong>
                 </p>
@@ -227,12 +227,12 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                       <YAxis
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fill: "#6B7280", fontSize: 11 }}
+                        tick={{ fill: "#6B7280", fontSize: 12 }}
                         tickFormatter={(v) => `R$ ${v}`}
                       />
                       <Tooltip
                         contentStyle={{
-                          borderRadius: "14px",
+                          borderRadius: "12px",
                           border: "1px solid #E5E7EB",
                           boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
                         }}
@@ -241,7 +241,14 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                           name,
                         ]}
                       />
-                      <Legend wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }} />
+                      <Legend
+                        wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }}
+                        formatter={(value) => (
+                          <span className="!text-gray-800 dark:!text-gray-100 font-semibold">
+                            {value}
+                          </span>
+                        )}
+                      />
                       <Bar
                         dataKey={activePeriodKey}
                         name="Receita no Dia/Mês"
@@ -265,8 +272,8 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                     <AreaChart data={data} margin={{ top: 10, right: 15, left: 5, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorCumOnly" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.4} />
-                          <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.02} />
+                          <stop offset="5%" stopColor="#2563EB" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#2563EB" stopOpacity={0.02} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" opacity={0.6} />
@@ -280,12 +287,12 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                       <YAxis
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fill: "#6B7280", fontSize: 11 }}
+                        tick={{ fill: "#6B7280", fontSize: 12 }}
                         tickFormatter={(v) => `R$ ${v}`}
                       />
                       <Tooltip
                         contentStyle={{
-                          borderRadius: "14px",
+                          borderRadius: "12px",
                           border: "1px solid #E5E7EB",
                           boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
                         }}
@@ -294,16 +301,23 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                           "Faturamento Acumulado",
                         ]}
                       />
-                      <Legend wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }} />
+                      <Legend
+                        wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }}
+                        formatter={(value) => (
+                          <span className="!text-gray-800 dark:!text-gray-100 font-semibold">
+                            {value}
+                          </span>
+                        )}
+                      />
                       <Area
                         type="monotone"
                         dataKey={activeCumulativeKey}
                         name="Faturamento Acumulado (R$)"
-                        stroke="#4F46E5"
+                        stroke="#2563EB"
                         strokeWidth={3.5}
                         fillOpacity={1}
                         fill="url(#colorCumOnly)"
-                        dot={{ r: 4, fill: "#4F46E5", strokeWidth: 2, stroke: "#fff" }}
+                        dot={{ r: 4, fill: "#2563EB", strokeWidth: 2, stroke: "#fff" }}
                         activeDot={{ r: 6 }}
                       />
                     </AreaChart>
@@ -326,12 +340,19 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                       <Tooltip
                         cursor={{ fill: "rgba(37, 99, 235, 0.06)" }}
                         contentStyle={{
-                          borderRadius: "14px",
+                          borderRadius: "12px",
                           border: "1px solid #E5E7EB",
                           boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
                         }}
                       />
-                      <Legend wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }} />
+                      <Legend
+                        wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }}
+                        formatter={(value) => (
+                          <span className="!text-gray-800 dark:!text-gray-100 font-semibold">
+                            {value}
+                          </span>
+                        )}
+                      />
                       <Bar
                         dataKey="completedOrders"
                         name="Pedidos Concluídos"
@@ -371,17 +392,17 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
         {/* GRÁFICO 2: Distribuição de Vendas por Licença de Software (5 colunas) */}
         <div className="lg:col-span-5 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col justify-between">
           <div>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4">
+              <div className="min-w-0">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white text-balance leading-snug">
                   Vendas por Licença de Software
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 text-balance">
                   Distribuição proporcional por produto B2B
                 </p>
               </div>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 shrink-0 self-start xl:self-auto">
                 {/* Alternador Receita vs Unidades */}
                 <div className="flex items-center bg-gray-100 dark:bg-gray-900 p-1 rounded-xl">
                   <button
@@ -507,7 +528,7 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                           axisLine={false}
                           tickLine={false}
                           width={110}
-                          tick={{ fill: "#6B7280", fontSize: 11 }}
+                          tick={{ fill: "#6B7280", fontSize: 12 }}
                         />
                         <Tooltip
                           contentStyle={{
