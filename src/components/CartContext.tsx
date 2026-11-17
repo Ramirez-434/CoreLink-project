@@ -24,15 +24,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const savedCart = localStorage.getItem("corelink_cart");
-    if (savedCart) {
-      try {
-        setItems(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Erro ao ler o carrinho", e);
+    const rafId = requestAnimationFrame(() => {
+      const savedCart = localStorage.getItem("corelink_cart");
+      if (savedCart) {
+        try {
+          setItems(JSON.parse(savedCart));
+        } catch (e) {
+          console.error("Erro ao ler o carrinho", e);
+        }
       }
-    }
-    setIsLoaded(true);
+      setIsLoaded(true);
+    });
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   useEffect(() => {

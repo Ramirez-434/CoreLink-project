@@ -49,13 +49,16 @@ export function CheckoutForm({
   const [isNavigating, setIsNavigating] = useState(false);
   const checkoutLockRef = useRef(false);
   const couponLockRef = useRef(false);
-  const idempotencyKeyRef = useRef<string>(
-    `chk_${product.id}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`
-  );
+  const idempotencyKeyRef = useRef<string>("");
 
   const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
   const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    id: string;
+    code: string;
+    discountType: string;
+    discountValue: number;
+  } | null>(null);
   const [couponError, setCouponError] = useState("");
   const [lgpdConsent, setLgpdConsent] = useState(false);
 
@@ -109,6 +112,9 @@ export function CheckoutForm({
 
     checkoutLockRef.current = true;
     setIsLoading(true);
+    if (!idempotencyKeyRef.current) {
+      idempotencyKeyRef.current = `chk_${product.id}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+    }
 
     const toastId = toast.loading("Processando seu pedido com proteção de idempotência...");
 

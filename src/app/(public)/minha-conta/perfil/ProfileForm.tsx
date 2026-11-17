@@ -104,24 +104,26 @@ export function ProfileForm({ user }: { user: ProfileUser }) {
 
   // Restore unsaved draft from sessionStorage on mount (protects mobile app-switching)
   useEffect(() => {
-    try {
-      const rawDraft = sessionStorage.getItem(storageKey);
-      if (rawDraft) {
-        const parsed = JSON.parse(rawDraft);
-        if (parsed && typeof parsed === "object") {
-          if (typeof parsed.name === "string") setName(parsed.name);
-          if (typeof parsed.phone === "string") setPhone(parsed.phone);
-          if (typeof parsed.companyName === "string") setCompanyName(parsed.companyName);
-          if (typeof parsed.document === "string") setDocument(parsed.document);
-          if (typeof parsed.stateRegistration === "string")
-            setStateRegistration(parsed.stateRegistration);
-          if (typeof parsed.address === "string") setAddress(parsed.address);
-          setDraftRestored(true);
+    const rafId = requestAnimationFrame(() => {
+      try {
+        const rawDraft = sessionStorage.getItem(storageKey);
+        if (rawDraft) {
+          const parsed = JSON.parse(rawDraft);
+          if (parsed && typeof parsed === "object") {
+            if (typeof parsed.name === "string") setName(parsed.name);
+            if (typeof parsed.phone === "string") setPhone(parsed.phone);
+            if (typeof parsed.companyName === "string") setCompanyName(parsed.companyName);
+            if (typeof parsed.document === "string") setDocument(parsed.document);
+            if (typeof parsed.stateRegistration === "string")
+              setStateRegistration(parsed.stateRegistration);
+            if (typeof parsed.address === "string") setAddress(parsed.address);
+            setDraftRestored(true);
+          }
         }
+      } catch {
+        // Ignore storage access errors
       }
-    } catch {
-      // Ignore storage access errors
-    }
+    });
 
     // Focus deep-linked field when arriving from interactive ProfileProgressBar checklist
     try {
@@ -147,6 +149,7 @@ export function ProfileForm({ user }: { user: ProfileUser }) {
     } catch {
       // Ignore URL parsing errors
     }
+    return () => cancelAnimationFrame(rafId);
   }, [storageKey]);
 
   // Save draft changes to sessionStorage & guard against accidental tab close

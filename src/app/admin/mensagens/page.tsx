@@ -43,7 +43,7 @@ export default async function AdminMessagesPage() {
                     <td className="p-4 text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap">{msg.name}</td>
                     <td className="p-4 text-sm text-primary font-medium whitespace-nowrap">
                       {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(msg.email) ? (
-                        <a href={`mailto:${encodeURIComponent(msg.email)}`} className="hover:underline">
+                        <a href={`mailto:${encodeURI(msg.email)}`} className="hover:underline">
                           {msg.email}
                         </a>
                       ) : (

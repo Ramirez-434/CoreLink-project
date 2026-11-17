@@ -16,7 +16,6 @@ import {
   Legend,
   ResponsiveContainer,
   ComposedChart,
-  Line,
 } from "recharts";
 import { TrendingUp, PieChart as PieChartIcon, BarChart3, Layers, CheckCircle2, Clock } from "lucide-react";
 
@@ -236,9 +235,9 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                           border: "1px solid #E5E7EB",
                           boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
                         }}
-                        formatter={(value: any, name: any) => [
+                        formatter={(value: unknown, name: unknown) => [
                           formatBRL(Number(value ?? 0)),
-                          name,
+                          String(name ?? ""),
                         ]}
                       />
                       <Legend
@@ -296,7 +295,7 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                           border: "1px solid #E5E7EB",
                           boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
                         }}
-                        formatter={(value: any) => [
+                        formatter={(value: unknown) => [
                           formatBRL(Number(value ?? 0)),
                           "Faturamento Acumulado",
                         ]}
@@ -499,7 +498,7 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                             border: "1px solid #E5E7EB",
                             boxShadow: "0 8px 15px -3px rgba(0, 0, 0, 0.1)",
                           }}
-                          formatter={(value: any, name: any) => {
+                          formatter={(value: unknown, name: unknown) => {
                             const num = Number(value ?? 0);
                             const pct =
                               totalDistributionValue > 0
@@ -509,7 +508,7 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                               distributionMetric === "revenue"
                                 ? `${formatBRL(num)} (${pct}%)`
                                 : `${num} licença(s) (${pct}%)`,
-                              name,
+                              String(name ?? ""),
                             ];
                           }}
                         />
@@ -535,7 +534,7 @@ export function AdminCharts({ data, licenseData, periodoLabel }: AdminChartsProp
                             borderRadius: "12px",
                             border: "1px solid #E5E7EB",
                           }}
-                          formatter={(value: any) => [
+                          formatter={(value: unknown) => [
                             distributionMetric === "revenue"
                               ? formatBRL(Number(value ?? 0))
                               : `${Number(value ?? 0)} licença(s)`,

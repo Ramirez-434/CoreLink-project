@@ -4,7 +4,18 @@ import { useState } from "react";
 import { createCoupon, toggleCouponStatus } from "@/actions/coupon";
 import { Tag, Plus, CheckCircle2, XCircle } from "lucide-react";
 
-export function CuponsManager({ initialCoupons }: { initialCoupons: any[] }) {
+type CouponItem = {
+  id: string;
+  code: string;
+  discountType: string;
+  discountValue: number;
+  isActive: boolean;
+  usedCount: number;
+  usageLimit: number | null;
+  expiryDate?: Date | string | null;
+};
+
+export function CuponsManager({ initialCoupons }: { initialCoupons: CouponItem[] }) {
   const [coupons, setCoupons] = useState(initialCoupons);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

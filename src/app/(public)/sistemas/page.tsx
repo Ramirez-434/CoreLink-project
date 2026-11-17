@@ -114,7 +114,7 @@ export default async function SistemasPage({
           {query && (
             <div className="mt-4 inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold border border-blue-200/50 dark:border-blue-800/50">
               <Search size={13} />
-              Filtrado por: "{query}"
+              Filtrado por: &quot;{query}&quot;
               <Link href="/sistemas" className="ml-1 hover:text-red-500">
                 <X size={13} />
               </Link>

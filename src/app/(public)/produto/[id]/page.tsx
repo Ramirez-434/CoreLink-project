@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { Monitor, CheckCircle2, ShieldCheck, ChevronDown, Zap } from "lucide-react";
+import { CheckCircle2, ShieldCheck, ChevronDown, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { AddToCartButton } from "@/components/ui/AddToCartButton";
 
@@ -16,7 +16,10 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
   }
 
   const features = product.features || [];
-  const faqData = product.faq as any[] || [];
+  const faqData = (Array.isArray(product.faq) ? product.faq : []) as Array<{
+    question: string;
+    answer: string;
+  }>;
 
   return (
     <div className="relative overflow-hidden min-h-screen pb-24 bg-gray-50/50 dark:bg-black">

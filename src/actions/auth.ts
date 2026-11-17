@@ -20,7 +20,19 @@ export async function registerUser(formData: FormData) {
     return { error: "Preencha todos os campos obrigatórios." };
   }
 
-  if (hasMaliciousInjection(rawName) || hasMaliciousInjection(rawEmail) || hasMaliciousInjection(rawPhone)) {
+  if (password.length < 6) {
+    return { error: "A senha deve ter pelo menos 6 caracteres." };
+  }
+
+  if (Buffer.byteLength(password, "utf8") > 72) {
+    return { error: "A senha não pode exceder 72 bytes." };
+  }
+
+  if (
+    hasMaliciousInjection(rawName) ||
+    hasMaliciousInjection(rawEmail) ||
+    hasMaliciousInjection(rawPhone)
+  ) {
     return { error: "Entrada bloqueada: caracteres inválidos ou tentativa de injeção detectada." };
   }
 
@@ -29,7 +41,7 @@ export async function registerUser(formData: FormData) {
     return { error: "Informe um nome válido com pelo menos 2 caracteres." };
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!emailRegex.test(rawEmail)) {
     return { error: "Formato de e-mail inválido." };
   }
@@ -63,8 +75,9 @@ export async function registerUser(formData: FormData) {
     await sendWelcomeEmail(user.email, user.name || "Cliente");
 
     revalidatePath("/admin/clientes");
+    revalidatePath("/admin/dashboard");
     return { success: true };
-  } catch (error) {
+  } catch {
     return { error: "Erro ao criar conta." };
   }
 }

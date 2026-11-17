@@ -4,35 +4,44 @@ import { useCart } from "@/components/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Trash2, MessageCircle, Loader2, Zap } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useSyncExternalStore } from "react";
 import { buildCommercialWhatsAppUrl } from "@/lib/whatsapp";
+
+const emptySubscribe = () => () => {};
 
 export default function CarrinhoPage() {
   const { items, removeFromCart, totalItems } = useCart();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
   const [isLoading, setIsLoading] = useState(false);
   const checkoutNavLockRef = useRef(false);
   const router = useRouter();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   if (!mounted) return null;
 
   const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const handleProceedToCheckout = () => {
-    if (checkoutNavLockRef.current || isLoading || items.length === 0) return;
+  const handleProceedToCheckout = (targetProductId?: string) => {
+    const productId = targetProductId || items[0]?.id;
+    if (checkoutNavLockRef.current || isLoading || !productId) return;
     checkoutNavLockRef.current = true;
     setIsLoading(true);
-    router.push(`/checkout/${items[0].id}`);
+    router.push(`/checkout/${productId}`);
   };
+
+  const cartFingerprint = items
+    .map((i) => `${i.id.slice(0, 3)}${i.quantity}`)
+    .join("")
+    .toUpperCase()
+    .slice(0, 6);
 
   const whatsappCartUrl =
     items.length > 0
       ? buildCommercialWhatsAppUrl({
-          orderId: `CART-${Date.now().toString(36).toUpperCase().slice(-6)}`,
+          orderId: `CART-${cartFingerprint || "B2B"}`,
           companyName: "Empresa Cliente (Cotação B2B via Carrinho)",
           softwares: items.map((item) => ({
             softwareName: item.name,
@@ -66,16 +75,27 @@ export default function CarrinhoPage() {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center justify-between p-6 bg-white dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800"
+                className="flex items-center justify-between p-6 bg-white dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800 gap-4"
               >
                 <div>
                   <h3 className="font-bold text-gray-900 dark:text-white text-lg">{item.name}</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Qtd: {item.quantity} licença(s)
                   </p>
+                  {items.length > 1 && (
+                    <button
+                      type="button"
+                      disabled={isLoading}
+                      onClick={() => handleProceedToCheckout(item.id)}
+                      className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-primary dark:text-blue-400 hover:underline disabled:opacity-50"
+                    >
+                      <Zap size={13} />
+                      Checkout individual desta licença
+                    </button>
+                  )}
                 </div>
                 <div className="flex items-center gap-6">
-                  <span className="font-extrabold text-primary">
+                  <span className="font-extrabold text-primary tabular-nums">
                     {(item.price * item.quantity).toLocaleString("pt-BR", {
                       style: "currency",
                       currency: "BRL",
@@ -86,6 +106,7 @@ export default function CarrinhoPage() {
                     disabled={isLoading}
                     onClick={() => removeFromCart(item.id)}
                     className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+                    aria-label={`Remover ${item.name} do carrinho`}
                   >
                     <Trash2 size={20} />
                   </button>
@@ -100,40 +121,38 @@ export default function CarrinhoPage() {
             <div className="space-y-4 mb-4">
               <div className="flex justify-between text-gray-600 dark:text-gray-400">
                 <span>Licenças ({totalItems})</span>
-                <span>
+                <span className="tabular-nums">
                   {totalAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                 </span>
               </div>
               <div className="flex justify-between font-extrabold text-lg text-gray-900 dark:text-white pt-4 border-t border-gray-200 dark:border-gray-700">
                 <span>Total</span>
-                <span className="text-primary">
+                <span className="text-primary tabular-nums">
                   {totalAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                 </span>
               </div>
             </div>
 
-            {items.length === 1 && (
-              <button
-                type="button"
-                onClick={handleProceedToCheckout}
-                disabled={isLoading}
-                aria-busy={isLoading}
-                data-loading={isLoading}
-                className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-xl text-center shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover-lift flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-none"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 size={18} className="animate-spin" />
-                    Redirecionando ao Checkout...
-                  </>
-                ) : (
-                  <>
-                    <Zap size={18} />
-                    Finalizar Compra Online
-                  </>
-                )}
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => handleProceedToCheckout(items[0]?.id)}
+              disabled={isLoading}
+              aria-busy={isLoading}
+              data-loading={isLoading}
+              className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 px-4 rounded-xl text-center shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover-lift flex items-center justify-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-none"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Redirecionando ao Checkout...
+                </>
+              ) : (
+                <>
+                  <Zap size={18} />
+                  {items.length === 1 ? "Finalizar Compra Online" : "Checkout do 1º Sistema"}
+                </>
+              )}
+            </button>
 
             <a
               href={whatsappCartUrl}

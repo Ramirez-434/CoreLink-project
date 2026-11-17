@@ -25,13 +25,16 @@ export function ProfileProgressBar({ user }: { user: ProfileProgressUser }) {
   const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
-    try {
-      if (localStorage.getItem("corelink_profile_checklist_dismissed") === "true") {
-        setIsDismissed(true);
+    const rafId = requestAnimationFrame(() => {
+      try {
+        if (localStorage.getItem("corelink_profile_checklist_dismissed") === "true") {
+          setIsDismissed(true);
+        }
+      } catch {
+        // Ignore storage errors
       }
-    } catch {
-      // Ignore storage errors
-    }
+    });
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   const handleToggleDismiss = (dismiss: boolean) => {

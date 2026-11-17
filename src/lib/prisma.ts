@@ -36,7 +36,7 @@ const RETRYABLE_ERROR_CODES = new Set([
 
 function isTransientDatabaseError(error: unknown): boolean {
   if (!error || typeof error !== "object") return false;
-  const err = error as Record<string, any>;
+  const err = error as Record<string, unknown>;
   const code = String(err.code || err.errno || "");
   if (RETRYABLE_ERROR_CODES.has(code)) return true;
 
@@ -134,10 +134,8 @@ function createOptimizedPrismaClient(): PrismaClient {
 
 export const prisma: PrismaClient = globalForPrisma.prismaDB ?? createOptimizedPrismaClient();
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.pgPool = pgPool;
-  globalForPrisma.prismaDB = prisma;
-}
+globalForPrisma.pgPool = pgPool;
+globalForPrisma.prismaDB = prisma;
 
 /**
  * Pré-aquece o pool de conexões com o Neon PostgreSQL e retorna a telemetria de latência.

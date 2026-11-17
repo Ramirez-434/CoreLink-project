@@ -1,20 +1,26 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, Mail, Phone, Calendar, ShoppingBag, TrendingUp } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Calendar, ShoppingBag, TrendingUp } from "lucide-react";
 
 export default async function PerfilClientePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await prisma.user.findUnique({
     where: { id },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      createdAt: true,
       orders: {
         include: {
-          product: true
+          product: true,
         },
-        orderBy: { createdAt: "desc" }
-      }
-    }
+        orderBy: { createdAt: "desc" },
+      },
+    },
   });
 
   if (!user) {

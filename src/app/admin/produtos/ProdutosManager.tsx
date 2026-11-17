@@ -16,7 +16,7 @@ type Product = {
   isSubscription: boolean;
   billingCycle: string | null;
   features: string[];
-  faq: any;
+  faq: unknown;
 };
 
 function safeCsvCell(val: unknown): string {

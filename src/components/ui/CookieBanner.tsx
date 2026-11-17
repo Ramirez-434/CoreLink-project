@@ -8,11 +8,13 @@ export function CookieBanner() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Verifica se o usuário já aceitou
-    const consent = localStorage.getItem("lgpd_cookie_consent");
-    if (!consent) {
-      setIsVisible(true);
-    }
+    const rafId = requestAnimationFrame(() => {
+      const consent = localStorage.getItem("lgpd_cookie_consent");
+      if (!consent) {
+        setIsVisible(true);
+      }
+    });
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   const handleAcceptAll = () => {

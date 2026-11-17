@@ -6,9 +6,15 @@ export default async function AssinaturasPage() {
   const subscriptions = await prisma.subscription.findMany({
     orderBy: { createdAt: "desc" },
     include: {
-      user: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
       product: true,
-    }
+    },
   });
 
   return (
@@ -28,7 +34,7 @@ export default async function AssinaturasPage() {
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         {subscriptions.length === 0 ? (
           <div className="p-12 text-center text-gray-500 dark:text-gray-400 font-medium">
-            Nenhuma assinatura encontrada. Marque um produto como "Assinatura" e receba pedidos.
+            Nenhuma assinatura encontrada. Marque um produto como &quot;Assinatura&quot; e receba pedidos.
           </div>
         ) : (
           <div className="overflow-x-auto">

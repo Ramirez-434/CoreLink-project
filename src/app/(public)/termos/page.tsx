@@ -16,7 +16,7 @@ export default function TermosDeUsoPage() {
         <p>Ao acessar e utilizar os serviços da HJ Infor, você concorda expressamente em cumprir e estar sujeito a estes Termos de Uso. Se você não concorda com alguma parte destes termos, você não deve utilizar a nossa plataforma.</p>
 
         <h2>2. Uso da Plataforma</h2>
-        <p>A plataforma é fornecida "no estado em que se encontra", com a finalidade de gestão comercial e controle de acessos. Você se compromete a:</p>
+        <p>A plataforma é fornecida &quot;no estado em que se encontra&quot;, com a finalidade de gestão comercial e controle de acessos. Você se compromete a:</p>
         <ul>
           <li>Fornecer informações verdadeiras, exatas, atuais e completas durante o registro.</li>
           <li>Manter a confidencialidade da sua senha e dados da sua conta.</li>

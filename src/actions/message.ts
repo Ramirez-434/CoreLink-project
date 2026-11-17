@@ -2,12 +2,12 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { verifyAdminSession } from "@/lib/admin-auth";
 
 export async function deleteMessage(formData: FormData) {
   try {
-    const session = await auth();
-    if (!session?.user || (session.user as any).role !== "ADMIN") {
+    const admin = await verifyAdminSession();
+    if (!admin) {
       return { success: false, error: "Acesso negado. Apenas administradores podem excluir mensagens." };
     }
 
@@ -15,7 +15,7 @@ export async function deleteMessage(formData: FormData) {
     if (!id) return { success: false, error: "ID inválido" };
 
     await prisma.contactMessage.delete({
-      where: { id }
+      where: { id },
     });
 
     revalidatePath("/admin/mensagens");

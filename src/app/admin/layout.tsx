@@ -1,4 +1,5 @@
-import { auth, signOut } from "@/auth";
+import { signOut } from "@/auth";
+import { verifyAdminSession } from "@/lib/admin-auth";
 import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
@@ -7,10 +8,10 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const adminUser = await verifyAdminSession();
 
-  // If not authenticated or not an ADMIN, redirect them to the home or their client dashboard
-  if (!session || !session.user || (session.user as any).role !== "ADMIN") {
+  // If not authenticated or not an active ADMIN in PostgreSQL, redirect them to the home
+  if (!adminUser) {
     redirect("/");
   }
 
@@ -21,7 +22,7 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex">
-      <AdminSidebar adminName={session.user.name || "Admin"} logoutAction={logout} />
+      <AdminSidebar adminName={adminUser.name || "Admin"} logoutAction={logout} />
 
       {/* Main Content */}
       <main className="flex-1 min-w-0 overflow-auto">

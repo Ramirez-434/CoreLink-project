@@ -1,11 +1,12 @@
 "use server";
 
 import { prisma, withDatabaseRetry } from "@/lib/prisma";
-import { auth } from "@/auth";
+import { verifyAdminSession, verifyAuthenticatedUser } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { sendOrderConfirmationEmail } from "@/actions/email";
 
 const ALLOWED_STATUSES = ["PENDING", "PROCESSING", "COMPLETED", "CANCELLED"] as const;
+type AllowedOrderStatus = (typeof ALLOWED_STATUSES)[number];
 
 type CheckoutResult = {
   success: boolean;
@@ -29,24 +30,39 @@ const processedIdempotencyKeys =
 globalForCheckoutMutex.activeCheckoutLocks = activeCheckoutLocks;
 globalForCheckoutMutex.processedIdempotencyKeys = processedIdempotencyKeys;
 
+function pruneExpiredIdempotencyKeys(now: number) {
+  if (processedIdempotencyKeys.size < 100) return;
+  for (const [key, entry] of processedIdempotencyKeys.entries()) {
+    if (now - entry.timestamp >= 60_000) {
+      processedIdempotencyKeys.delete(key);
+    }
+  }
+}
+
 export async function createOrder(
   productId: string,
   couponId?: string,
   idempotencyKey?: string
 ): Promise<CheckoutResult> {
   try {
-    const session = await auth();
-    if (!session || !session.user || !session.user.id) {
+    const authUser = await verifyAuthenticatedUser();
+    if (!authUser) {
       return { success: false, error: "Você precisa estar logado para fazer um pedido." };
     }
 
-    const userId = session.user.id as string;
+    const userId = authUser.id;
     const lockKey = `${userId}:${productId}`;
+    const scopedIdempotencyKey = idempotencyKey
+      ? `${userId}:${productId}:${idempotencyKey}`
+      : undefined;
 
-    // 1. Verificação instantânea por Chave de Idempotência (Token único por sessão de checkout)
-    if (idempotencyKey) {
-      const cached = processedIdempotencyKeys.get(idempotencyKey);
-      if (cached && Date.now() - cached.timestamp < 60_000) {
+    const now = Date.now();
+    pruneExpiredIdempotencyKeys(now);
+
+    // 1. Verificação instantânea por Chave de Idempotência escopada por tenant (userId + productId)
+    if (scopedIdempotencyKey) {
+      const cached = processedIdempotencyKeys.get(scopedIdempotencyKey);
+      if (cached && now - cached.timestamp < 60_000) {
         return {
           success: true,
           orderId: cached.orderId,
@@ -71,8 +87,8 @@ export async function createOrder(
         where: { id: productId },
       });
 
-      if (!product || !product.isAvailable) {
-        return { success: false, error: "Produto indisponível." };
+      if (!product || !product.isAvailable || product.stock <= 0) {
+        return { success: false, error: "Produto indisponível ou sem estoque no momento." };
       }
 
       // 3. Guarda de idempotência no PostgreSQL (janela de 15s)
@@ -88,8 +104,8 @@ export async function createOrder(
       });
 
       if (existingRecentOrder) {
-        if (idempotencyKey) {
-          processedIdempotencyKeys.set(idempotencyKey, {
+        if (scopedIdempotencyKey) {
+          processedIdempotencyKeys.set(scopedIdempotencyKey, {
             orderId: existingRecentOrder.id,
             timestamp: Date.now(),
           });
@@ -161,8 +177,8 @@ export async function createOrder(
         { operationName: "order.createOrderTransaction" }
       );
 
-      if (idempotencyKey) {
-        processedIdempotencyKeys.set(idempotencyKey, {
+      if (scopedIdempotencyKey) {
+        processedIdempotencyKeys.set(scopedIdempotencyKey, {
           orderId: order.id,
           timestamp: Date.now(),
         });
@@ -195,95 +211,150 @@ export async function createOrder(
 
 export async function updateOrderStatus(orderId: string, newStatus: string) {
   try {
-    const session = await auth();
-    if (!session || !session.user || (session.user as any).role !== "ADMIN") {
+    const admin = await verifyAdminSession();
+    if (!admin) {
       return {
         success: false,
         error: "Acesso negado. Apenas administradores podem alterar o status.",
       };
     }
 
-    if (!orderId || !ALLOWED_STATUSES.includes(newStatus as any)) {
+    if (!orderId || !ALLOWED_STATUSES.includes(newStatus as AllowedOrderStatus)) {
       return { success: false, error: "Status de pedido inválido." };
     }
 
-    const existingOrder = await prisma.order.findUnique({
-      where: { id: orderId },
-      include: { product: true, user: true },
-    });
-
-    if (!existingOrder) {
-      return { success: false, error: "Pedido não encontrado no banco de dados." };
-    }
-
-    const previousStatus = existingOrder.status;
-
-    // Guarda de idempotência: evita re-execução caso o status já esteja igual no banco
-    if (previousStatus === newStatus) {
-      return {
-        success: true,
-        orderId: existingOrder.id,
-        previousStatus,
-        newStatus,
-        deduplicated: true,
-        customerName: existingOrder.user?.name || "Cliente",
-        productName: existingOrder.product?.name || "Software",
-        updatedAt: existingOrder.updatedAt.toISOString(),
-      };
-    }
-
-    const updatedOrder = await withDatabaseRetry(
+    const txResult = await withDatabaseRetry(
       () =>
         prisma.$transaction(async (tx) => {
-          const updated = await tx.order.update({
+          const existingOrder = await tx.order.findUnique({
             where: { id: orderId },
+            include: {
+              product: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          });
+
+          if (!existingOrder) {
+            throw new Error("ORDER_NOT_FOUND");
+          }
+
+          const previousStatus = existingOrder.status;
+
+          // Guarda de idempotência: evita re-execução caso o status já esteja igual no banco
+          if (previousStatus === newStatus) {
+            return {
+              order: existingOrder,
+              previousStatus,
+              deduplicated: true,
+            };
+          }
+
+          // Atualização condicional atômica contra condições de corrida
+          const statusUpdated = await tx.order.updateMany({
+            where: { id: orderId, status: previousStatus },
             data: { status: newStatus },
           });
 
-          // Quando o pedido transita para COMPLETED pela primeira vez, atualiza estoque e cria assinatura SaaS se aplicável
+          if (statusUpdated.count === 0) {
+            throw new Error("CONCURRENT_STATUS_CHANGE");
+          }
+
           if (newStatus === "COMPLETED" && previousStatus !== "COMPLETED" && existingOrder.product) {
-            await tx.product.update({
-              where: { id: existingOrder.productId },
+            // Decremento condicional de estoque apenas se houver saldo disponível
+            await tx.product.updateMany({
+              where: {
+                id: existingOrder.productId,
+                stock: { gte: existingOrder.quantity },
+              },
               data: { stock: { decrement: existingOrder.quantity } },
             });
 
             if (existingOrder.product.isSubscription) {
-              const nextBillingDate = new Date();
-              if (existingOrder.product.billingCycle === "YEARLY") {
-                nextBillingDate.setFullYear(nextBillingDate.getFullYear() + 1);
-              } else {
-                nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
-              }
-
-              await tx.subscription.create({
-                data: {
+              const existingSubscription = await tx.subscription.findFirst({
+                where: {
                   userId: existingOrder.userId,
                   productId: existingOrder.productId,
                   status: "ACTIVE",
-                  nextBillingDate,
                 },
               });
+
+              if (!existingSubscription) {
+                const nextBillingDate = new Date();
+                if (existingOrder.product.billingCycle === "YEARLY") {
+                  nextBillingDate.setFullYear(nextBillingDate.getFullYear() + 1);
+                } else {
+                  nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
+                }
+
+                await tx.subscription.create({
+                  data: {
+                    userId: existingOrder.userId,
+                    productId: existingOrder.productId,
+                    status: "ACTIVE",
+                    nextBillingDate,
+                  },
+                });
+              }
             }
           }
 
-          return updated;
+          const refreshedOrder = await tx.order.findUnique({
+            where: { id: orderId },
+            include: {
+              product: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          });
+
+          return {
+            order: refreshedOrder ?? existingOrder,
+            previousStatus,
+            deduplicated: false,
+          };
         }),
       { operationName: "order.updateOrderStatusTransaction" }
     );
+
+    const { order: updatedOrder, previousStatus, deduplicated } = txResult;
+
+    if (deduplicated) {
+      return {
+        success: true,
+        orderId: updatedOrder.id,
+        previousStatus,
+        newStatus,
+        deduplicated: true,
+        customerName: updatedOrder.user?.name || "Cliente",
+        productName: updatedOrder.product?.name || "Software",
+        updatedAt: updatedOrder.updatedAt.toISOString(),
+      };
+    }
 
     // Dispara notificação por e-mail fora da transação do banco
     if (
       newStatus === "COMPLETED" &&
       previousStatus !== "COMPLETED" &&
-      existingOrder.user?.email &&
-      existingOrder.product
+      updatedOrder.user?.email &&
+      updatedOrder.product
     ) {
       try {
         await sendOrderConfirmationEmail(
-          existingOrder.user.email,
-          existingOrder.user.name,
-          existingOrder.product.name,
-          existingOrder.id
+          updatedOrder.user.email,
+          updatedOrder.user.name,
+          updatedOrder.product.name,
+          updatedOrder.id
         );
       } catch (emailErr) {
         console.warn("Aviso: falha não-bloqueante ao enviar e-mail de confirmação:", emailErr);
@@ -293,6 +364,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string) {
     revalidatePath("/admin/pedidos");
     revalidatePath("/admin/dashboard");
     revalidatePath("/admin/produtos");
+    revalidatePath("/admin/assinaturas");
     revalidatePath("/minha-conta");
 
     return {
@@ -300,11 +372,20 @@ export async function updateOrderStatus(orderId: string, newStatus: string) {
       orderId: updatedOrder.id,
       previousStatus,
       newStatus: updatedOrder.status,
-      customerName: existingOrder.user?.name || "Cliente",
-      productName: existingOrder.product?.name || "Software",
+      customerName: updatedOrder.user?.name || "Cliente",
+      productName: updatedOrder.product?.name || "Software",
       updatedAt: updatedOrder.updatedAt.toISOString(),
     };
   } catch (error) {
+    if (error instanceof Error && error.message === "ORDER_NOT_FOUND") {
+      return { success: false, error: "Pedido não encontrado no banco de dados." };
+    }
+    if (error instanceof Error && error.message === "CONCURRENT_STATUS_CHANGE") {
+      return {
+        success: false,
+        error: "Este pedido foi atualizado simultaneamente por outra requisição. Recarregue a página.",
+      };
+    }
     console.error("Erro ao atualizar status do pedido:", error);
     return {
       success: false,

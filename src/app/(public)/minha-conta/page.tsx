@@ -38,6 +38,17 @@ export default async function MinhaContaPage({
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      companyName: true,
+      document: true,
+      stateRegistration: true,
+      address: true,
+      role: true,
+    },
   });
 
   if (!user) redirect("/login");

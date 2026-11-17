@@ -116,8 +116,8 @@ export function OnboardingTour({ suppressAutoStart = false }: { suppressAutoStar
     const targetId = activeSteps[currentStep].targetId;
     const element = document.getElementById(targetId);
     if (!element) {
-      handleNext();
-      return;
+      const skipId = requestAnimationFrame(() => handleNext());
+      return () => cancelAnimationFrame(skipId);
     }
 
     const prefersReducedMotion =

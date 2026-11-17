@@ -2,34 +2,41 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { verifyAdminSession } from "@/lib/admin-auth";
 
 export async function createProduct(formData: FormData) {
   try {
-    const session = await auth();
-    if (!session?.user || (session.user as any).role !== "ADMIN") {
+    const admin = await verifyAdminSession();
+    if (!admin) {
       return { success: false, error: "Acesso negado. Apenas administradores podem cadastrar produtos." };
     }
 
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const priceStr = formData.get("price") as string;
+    const name = (formData.get("name") as string)?.trim();
+    const description = (formData.get("description") as string)?.trim();
+    const priceStr = (formData.get("price") as string) || "";
     const price = parseFloat(priceStr.replace(",", "."));
-    const imageUrl = formData.get("imageUrl") as string || null;
-    const videoUrl = formData.get("videoUrl") as string || null;
+    const imageUrl = (formData.get("imageUrl") as string) || null;
+    const videoUrl = (formData.get("videoUrl") as string) || null;
     const isAvailable = formData.get("isAvailable") === "true";
     const stock = parseInt((formData.get("stock") as string) || "0", 10);
     const isSubscription = formData.get("isSubscription") === "true";
-    const billingCycle = formData.get("billingCycle") as string || null;
+    const billingCycle = (formData.get("billingCycle") as string) || null;
 
-    const featuresStr = formData.get("featuresString") as string || "";
-    const features = featuresStr.split(",").map(f => f.trim()).filter(f => f);
+    const featuresStr = (formData.get("featuresString") as string) || "";
+    const features = featuresStr
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f);
 
-    const faqJson = formData.get("faqJson") as string || "[]";
+    const faqJson = (formData.get("faqJson") as string) || "[]";
     let faq = [];
-    try { faq = JSON.parse(faqJson); } catch (e) { faq = []; }
+    try {
+      faq = JSON.parse(faqJson);
+    } catch {
+      faq = [];
+    }
 
-    if (!name || !description || isNaN(price)) {
+    if (!name || !description || !Number.isFinite(price) || price < 0 || !Number.isInteger(stock) || stock < 0) {
       return { success: false, error: "Preencha todos os campos obrigatórios corretamente." };
     }
 
@@ -46,13 +53,14 @@ export async function createProduct(formData: FormData) {
         billingCycle,
         features,
         faq,
-      }
+      },
     });
 
     revalidatePath("/admin/produtos");
-    revalidatePath("/produtos"); // Para atualizar a loja pública também
-    revalidatePath("/"); // Para atualizar a home
-    
+    revalidatePath("/sistemas");
+    revalidatePath("/produtos");
+    revalidatePath("/");
+
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -62,30 +70,37 @@ export async function createProduct(formData: FormData) {
 
 export async function updateProduct(id: string, formData: FormData) {
   try {
-    const session = await auth();
-    if (!session?.user || (session.user as any).role !== "ADMIN") {
+    const admin = await verifyAdminSession();
+    if (!admin) {
       return { success: false, error: "Acesso negado. Apenas administradores podem atualizar produtos." };
     }
 
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const priceStr = formData.get("price") as string;
+    const name = (formData.get("name") as string)?.trim();
+    const description = (formData.get("description") as string)?.trim();
+    const priceStr = (formData.get("price") as string) || "";
     const price = parseFloat(priceStr.replace(",", "."));
-    const imageUrl = formData.get("imageUrl") as string || null;
-    const videoUrl = formData.get("videoUrl") as string || null;
+    const imageUrl = (formData.get("imageUrl") as string) || null;
+    const videoUrl = (formData.get("videoUrl") as string) || null;
     const isAvailable = formData.get("isAvailable") === "true";
     const stock = parseInt((formData.get("stock") as string) || "0", 10);
     const isSubscription = formData.get("isSubscription") === "true";
-    const billingCycle = formData.get("billingCycle") as string || null;
+    const billingCycle = (formData.get("billingCycle") as string) || null;
 
-    const featuresStr = formData.get("featuresString") as string || "";
-    const features = featuresStr.split(",").map(f => f.trim()).filter(f => f);
+    const featuresStr = (formData.get("featuresString") as string) || "";
+    const features = featuresStr
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f);
 
-    const faqJson = formData.get("faqJson") as string || "[]";
+    const faqJson = (formData.get("faqJson") as string) || "[]";
     let faq = [];
-    try { faq = JSON.parse(faqJson); } catch (e) { faq = []; }
+    try {
+      faq = JSON.parse(faqJson);
+    } catch {
+      faq = [];
+    }
 
-    if (!name || !description || isNaN(price)) {
+    if (!name || !description || !Number.isFinite(price) || price < 0 || !Number.isInteger(stock) || stock < 0) {
       return { success: false, error: "Preencha todos os campos obrigatórios corretamente." };
     }
 
@@ -103,14 +118,15 @@ export async function updateProduct(id: string, formData: FormData) {
         billingCycle,
         features,
         faq,
-      }
+      },
     });
 
     revalidatePath("/admin/produtos");
+    revalidatePath("/sistemas");
     revalidatePath("/produtos");
     revalidatePath(`/produto/${id}`);
     revalidatePath("/");
-    
+
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -120,19 +136,20 @@ export async function updateProduct(id: string, formData: FormData) {
 
 export async function deleteProduct(id: string) {
   try {
-    const session = await auth();
-    if (!session?.user || (session.user as any).role !== "ADMIN") {
+    const admin = await verifyAdminSession();
+    if (!admin) {
       return { success: false, error: "Acesso negado. Apenas administradores podem excluir produtos." };
     }
 
     await prisma.product.delete({
-      where: { id }
+      where: { id },
     });
 
     revalidatePath("/admin/produtos");
+    revalidatePath("/sistemas");
     revalidatePath("/produtos");
     revalidatePath("/");
-    
+
     return { success: true };
   } catch (error) {
     console.error(error);

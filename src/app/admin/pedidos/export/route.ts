@@ -37,9 +37,10 @@ export async function GET(request: Request) {
   }
 
   // 2. Verificação Estrita de Papel na Sessão JWT (403 Forbidden)
-  if ((session.user as any).role !== "ADMIN") {
+  const sessionRole = (session.user as { role?: string }).role;
+  if (sessionRole !== "ADMIN") {
     console.warn(
-      `[SECURITY][Export CSV Bloqueado] Tentativa de bypass por userId=${session.user.id} (role=${(session.user as any).role})`
+      `[SECURITY][Export CSV Bloqueado] Tentativa de bypass por userId=${session.user.id} (role=${sessionRole})`
     );
     return NextResponse.json(
       {
@@ -93,7 +94,19 @@ export async function GET(request: Request) {
   const orders = await prisma.order.findMany({
     where,
     orderBy: { createdAt: "desc" },
-    include: { user: true, product: true, coupon: true },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          companyName: true,
+          document: true,
+        },
+      },
+      product: true,
+      coupon: true,
+    },
   });
 
   const statusLabel: Record<string, string> = {

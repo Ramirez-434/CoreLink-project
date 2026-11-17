@@ -14,6 +14,16 @@ export default async function PerfilPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      companyName: true,
+      document: true,
+      stateRegistration: true,
+      address: true,
+    },
   });
 
   if (!user) redirect("/login");

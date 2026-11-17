@@ -17,7 +17,16 @@ export default async function PedidosPage({
     where: buildOrdersWhere({ q, status }),
     orderBy: { createdAt: "desc" },
     include: {
-      user: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          companyName: true,
+          document: true,
+        },
+      },
       product: true,
       coupon: true,
     },
@@ -33,7 +42,8 @@ export default async function PedidosPage({
   ).length;
   const cancelledCount = allStatuses.filter((o) => o.status === "CANCELLED").length;
 
-  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+  const twoHoursAgo = new Date();
+  twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
   const abandonedCartsCount = allStatuses.filter(
     (o) => (o.status === "PENDING" || o.status === "PROCESSING") && o.createdAt < twoHoursAgo
   ).length;

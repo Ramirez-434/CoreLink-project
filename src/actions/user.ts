@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { verifyAdminSession, verifyAuthenticatedUser } from "@/lib/admin-auth";
 import { z } from "zod";
 import {
   hasMaliciousInjection,
@@ -12,11 +12,28 @@ import {
   sanitizeStateRegistration,
 } from "@/lib/sanitize";
 
-export async function updateUserRole(id: string, role: "ADMIN" | "CUSTOMER") {
+const ALLOWED_ROLES = ["ADMIN", "CUSTOMER", "EMPLOYEE"] as const;
+type AllowedRole = (typeof ALLOWED_ROLES)[number];
+
+export async function updateUserRole(id: string, role: AllowedRole) {
   try {
-    const session = await auth();
-    if (!session || !session.user || (session.user as any).role !== "ADMIN") {
-      return { success: false, error: "Acesso negado. Apenas administradores podem alterar permissões." };
+    const admin = await verifyAdminSession();
+    if (!admin) {
+      return {
+        success: false,
+        error: "Acesso negado. Apenas administradores podem alterar permissões.",
+      };
+    }
+
+    if (!id || !ALLOWED_ROLES.includes(role)) {
+      return { success: false, error: "Papel de usuário inválido." };
+    }
+
+    if (admin.id === id && role !== "ADMIN") {
+      return {
+        success: false,
+        error: "Por segurança, você não pode remover seu próprio acesso de administrador.",
+      };
     }
 
     await prisma.user.update({
@@ -25,6 +42,7 @@ export async function updateUserRole(id: string, role: "ADMIN" | "CUSTOMER") {
     });
 
     revalidatePath("/admin/clientes");
+    revalidatePath("/admin/dashboard");
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -61,8 +79,8 @@ export async function updateUserProfile(data: {
   address: string;
 }) {
   try {
-    const session = await auth();
-    if (!session || !session.user || !session.user.id) {
+    const currentUser = await verifyAuthenticatedUser();
+    if (!currentUser) {
       return { success: false, error: "Não autorizado." };
     }
 
@@ -79,7 +97,7 @@ export async function updateUserProfile(data: {
     for (const field of rawFields) {
       if (hasMaliciousInjection(field.value)) {
         console.warn(
-          `[SECURITY][Input Injection Bloqueado] Campo "${field.label}" rejeitado para userId=${session.user.id}`
+          `[SECURITY][Input Injection Bloqueado] Campo "${field.label}" rejeitado para userId=${currentUser.id}`
         );
         return {
           success: false,
@@ -125,7 +143,7 @@ export async function updateUserProfile(data: {
     }
 
     await prisma.user.update({
-      where: { id: session.user.id },
+      where: { id: currentUser.id },
       data: {
         name: validatedData.data.name,
         phone: phoneCheck.formatted || null,

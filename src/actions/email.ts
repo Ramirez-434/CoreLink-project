@@ -1,10 +1,9 @@
-"use server";
-
 import { Resend } from "resend";
 
 function escapeHtml(str: string): string {
   if (!str) return "";
   return String(str)
+    .replace(/[\r\n]+/g, " ")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -16,22 +15,33 @@ function escapeHtml(str: string): string {
 // Para usar em produção, basta colocar RESEND_API_KEY no arquivo .env
 const resend = new Resend(process.env.RESEND_API_KEY || "re_mock_key_123");
 
-export async function sendOrderConfirmationEmail(userEmail: string, userName: string, productName: string, orderId: string) {
+export async function sendOrderConfirmationEmail(
+  userEmail: string,
+  userName: string,
+  productName: string,
+  orderId: string
+) {
   try {
     const safeUserName = escapeHtml(userName);
     const safeProductName = escapeHtml(productName);
-    const safeOrderId = escapeHtml(orderId);
+    const shortOrderCode = String(orderId || "")
+      .replace(/[\r\n]+/g, "")
+      .slice(0, 8)
+      .toUpperCase();
+    const safeOrderCode = escapeHtml(shortOrderCode);
 
     // Se for mock (sem chave real), nós apenas mostramos no console para a demonstração
     if (!process.env.RESEND_API_KEY) {
-      console.log(`[MOCK EMAIL] Enviado para ${userEmail}: Pedido ${safeOrderId} de ${safeProductName} confirmado!`);
+      console.log(
+        `[MOCK EMAIL] Enviado para ${userEmail.replace(/[\r\n]+/g, "")}: Pedido #${safeOrderCode} de ${safeProductName} confirmado!`
+      );
       return { success: true, mock: true };
     }
 
     const { data, error } = await resend.emails.send({
       from: "CoreLink <suporte@corelink.com.br>", // Precisa ser um domínio verificado no Resend
       to: [userEmail],
-      subject: `Seu pedido #${safeOrderId.slice(0,8).toUpperCase()} foi confirmado! 🎉`,
+      subject: `Seu pedido #${safeOrderCode} foi confirmado! 🎉`,
       html: `
         <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">
           <div style="background-color: #2563eb; color: white; padding: 20px; text-align: center;">
@@ -65,7 +75,7 @@ export async function sendWelcomeEmail(userEmail: string, userName: string) {
     const safeUserName = escapeHtml(userName);
 
     if (!process.env.RESEND_API_KEY) {
-      console.log(`[MOCK EMAIL] Boas vindas enviadas para ${userEmail}`);
+      console.log(`[MOCK EMAIL] Boas vindas enviadas para ${userEmail.replace(/[\r\n]+/g, "")}`);
       return { success: true, mock: true };
     }
 

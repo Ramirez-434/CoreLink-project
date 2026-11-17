@@ -61,7 +61,7 @@ export default async function Navbar() {
               </Link>
             ) : (
               <>
-                {(session.user as any).role === "ADMIN" ? (
+                {(session.user as { role?: string })?.role === "ADMIN" ? (
                   <Link
                     href="/admin/dashboard"
                     className="flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-2.5 min-h-[44px] rounded-full hover:opacity-90 transition-all font-bold shadow-sm text-sm"
@@ -102,7 +102,7 @@ export default async function Navbar() {
           <CartIcon />
           <ThemeToggle />
           <Link
-            href={!session ? "/login" : (session.user as any)?.role === "ADMIN" ? "/admin/dashboard" : "/minha-conta"}
+            href={!session ? "/login" : (session.user as { role?: string })?.role === "ADMIN" ? "/admin/dashboard" : "/minha-conta"}
             className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label={!session ? "Fazer login" : "Acessar minha conta"}
           >

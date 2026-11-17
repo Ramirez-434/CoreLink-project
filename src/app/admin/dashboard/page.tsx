@@ -30,7 +30,14 @@ async function DashboardDataStream({ periodo }: { periodo: string }) {
       take: 5,
       orderBy: { createdAt: "desc" },
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            companyName: true,
+          },
+        },
         product: true,
       },
     }),
