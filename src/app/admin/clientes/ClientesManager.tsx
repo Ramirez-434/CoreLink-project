@@ -14,6 +14,14 @@ type UserType = {
   createdAt: Date;
 };
 
+function safeCsvCell(val: unknown): string {
+  let s = String(val ?? "");
+  if (/^[=+\-@\t\r]/.test(s)) {
+    s = `'${s}`;
+  }
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
 export function ClientesManager({ initialUsers }: { initialUsers: UserType[] }) {
   const [users, setUsers] = useState<UserType[]>(initialUsers);
   const [search, setSearch] = useState("");
@@ -25,10 +33,16 @@ export function ClientesManager({ initialUsers }: { initialUsers: UserType[] }) 
   );
 
   const handleExportCSV = () => {
-    const csv = [
-      ["ID", "Nome", "E-mail", "Telefone", "Data Cadastro", "Permissão"],
-      ...users.map(u => [u.id, u.name, u.email, u.phone || "", u.createdAt.toISOString().split("T")[0], u.role])
-    ].map(e => e.join(",")).join("\n");
+    const headers = ["ID", "Nome", "E-mail", "Telefone", "Data Cadastro", "Permissão"].map(safeCsvCell).join(",");
+    const rows = users.map(u => [
+      safeCsvCell(u.id),
+      safeCsvCell(u.name),
+      safeCsvCell(u.email),
+      safeCsvCell(u.phone || ""),
+      safeCsvCell(u.createdAt.toISOString().split("T")[0]),
+      safeCsvCell(u.role)
+    ].join(","));
+    const csv = [headers, ...rows].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");

@@ -19,6 +19,14 @@ type Product = {
   faq: any;
 };
 
+function safeCsvCell(val: unknown): string {
+  let s = String(val ?? "");
+  if (/^[=+\-@\t\r]/.test(s)) {
+    s = `'${s}`;
+  }
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
 export function ProdutosManager({ initialProducts }: { initialProducts: Product[] }) {
   const [products] = useState<Product[]>(initialProducts);
   const [search, setSearch] = useState("");
@@ -89,10 +97,15 @@ export function ProdutosManager({ initialProducts }: { initialProducts: Product[
         <div className="flex gap-2 w-full sm:w-auto">
           <button 
             onClick={() => {
-              const csv = [
-                ["ID", "Nome", "Preço", "Estoque", "Disponível"],
-                ...products.map(p => [p.id, p.name, p.price, p.stock, p.isAvailable ? "Sim" : "Não"])
-              ].map(e => e.join(",")).join("\n");
+              const headers = ["ID", "Nome", "Preço", "Estoque", "Disponível"].map(safeCsvCell).join(",");
+              const rows = products.map(p => [
+                safeCsvCell(p.id),
+                safeCsvCell(p.name),
+                safeCsvCell(p.price),
+                safeCsvCell(p.stock),
+                safeCsvCell(p.isAvailable ? "Sim" : "Não")
+              ].join(","));
+              const csv = [headers, ...rows].join("\n");
               const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
               const url = URL.createObjectURL(blob);
               const link = document.createElement("a");

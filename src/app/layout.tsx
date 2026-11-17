@@ -47,8 +47,10 @@ export default function RootLayout({
           </CartProvider>
         </ThemeProvider>
       {/* impeccable-live-start */}
-<script src="http://localhost:8400/live.js?token=1f3b2189-747b-463d-85f6-a1155b58dc06"></script>
-{/* impeccable-live-end */}
+      {process.env.NODE_ENV === "development" && (
+        <script src="http://localhost:8400/live.js?token=1f3b2189-747b-463d-85f6-a1155b58dc06"></script>
+      )}
+      {/* impeccable-live-end */}
 </body>
     </html>
   );

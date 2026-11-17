@@ -138,7 +138,7 @@ export default async function Home() {
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   Escolha seu Sistema
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-pretty">
                   Explore nosso catálogo com preços transparentes em Reais (R$), sem taxas ocultas ou surpresas na contratação.
                 </p>
               </div>
@@ -155,7 +155,7 @@ export default async function Home() {
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   Cadastro da Empresa
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-pretty">
                   Informe os dados básicos da sua empresa (CNPJ, Razão Social e Inscrição Estadual) com validação Módulo 11 da Receita Federal.
                 </p>
               </div>
@@ -172,7 +172,7 @@ export default async function Home() {
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   Ativação & WhatsApp
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-pretty">
                   Nossa equipe técnica entra em contato direto via WhatsApp Comercial com o pedido parametrizado para colocar o software em produção.
                 </p>
               </div>
@@ -244,7 +244,7 @@ export default async function Home() {
               <div className="p-6 pt-4 flex-1 flex flex-col justify-between">
                 <div>
                   <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{feature.desc}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed text-pretty">{feature.desc}</p>
                 </div>
               </div>
             </div>

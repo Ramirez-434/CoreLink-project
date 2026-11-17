@@ -2,9 +2,15 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 export async function createCoupon(formData: FormData) {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+      return { success: false, error: "Acesso negado. Apenas administradores podem criar cupons." };
+    }
+
     const code = formData.get("code") as string;
     const discountType = formData.get("discountType") as string;
     const discountValue = parseFloat(formData.get("discountValue") as string);
@@ -29,6 +35,11 @@ export async function createCoupon(formData: FormData) {
 
 export async function toggleCouponStatus(id: string, currentStatus: boolean) {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+      return { success: false, error: "Acesso negado. Apenas administradores podem alterar o status de cupons." };
+    }
+
     await prisma.coupon.update({
       where: { id },
       data: { isActive: !currentStatus }

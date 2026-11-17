@@ -2,9 +2,15 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 export async function createProduct(formData: FormData) {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+      return { success: false, error: "Acesso negado. Apenas administradores podem cadastrar produtos." };
+    }
+
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const priceStr = formData.get("price") as string;
@@ -56,6 +62,11 @@ export async function createProduct(formData: FormData) {
 
 export async function updateProduct(id: string, formData: FormData) {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+      return { success: false, error: "Acesso negado. Apenas administradores podem atualizar produtos." };
+    }
+
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const priceStr = formData.get("price") as string;
@@ -109,6 +120,11 @@ export async function updateProduct(id: string, formData: FormData) {
 
 export async function deleteProduct(id: string) {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+      return { success: false, error: "Acesso negado. Apenas administradores podem excluir produtos." };
+    }
+
     await prisma.product.delete({
       where: { id }
     });

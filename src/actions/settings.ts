@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 export async function getSystemSetting(key: string, defaultValue: string = "false") {
   const setting = await prisma.systemSetting.findUnique({ where: { key } });
@@ -10,6 +11,11 @@ export async function getSystemSetting(key: string, defaultValue: string = "fals
 
 export async function toggleSystemSetting(key: string, value: string) {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+      return { success: false, error: "Acesso negado. Apenas administradores podem alterar configurações." };
+    }
+
     await prisma.systemSetting.upsert({
       where: { key },
       update: { value },
@@ -31,6 +37,11 @@ export async function saveCompanySettings(data: {
   companyCnpj: string;
 }) {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+      return { success: false, error: "Acesso negado. Apenas administradores podem salvar dados da empresa." };
+    }
+
     await prisma.$transaction([
       prisma.systemSetting.upsert({
         where: { key: "company_name" },
@@ -59,6 +70,11 @@ export async function saveCompanySettings(data: {
 
 export async function clearSystemCache() {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+      return { success: false, error: "Acesso negado. Apenas administradores podem limpar o cache." };
+    }
+
     revalidatePath("/", "layout");
     return { success: true };
   } catch (error) {

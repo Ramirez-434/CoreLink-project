@@ -1,0 +1,14 @@
+.git
+node_modules
+.next
+.env*
+.vercel
+.gemini
+.impeccable
+docs
+scratch
+scripts
+dev.db
+make-admin.js
+make-admin.ts
+*.pdf
