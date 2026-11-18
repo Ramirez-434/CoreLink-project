@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Edit, Trash2, Search, X } from "lucide-react";
 import { createProduct, updateProduct, deleteProduct } from "@/actions/product";
 
@@ -28,8 +29,10 @@ function safeCsvCell(val: unknown): string {
 }
 
 export function ProdutosManager({ initialProducts }: { initialProducts: Product[] }) {
-  const [products] = useState<Product[]>(initialProducts);
+  const router = useRouter();
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [search, setSearch] = useState("");
+  const products = initialProducts.filter((p) => !deletedIds.includes(p.id));
   
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,16 +77,19 @@ export function ProdutosManager({ initialProducts }: { initialProducts: Product[
 
     if (res.success) {
       closeModal();
-      // Since we revalidatePath on server, next.js will automatically refetch data
+      router.refresh();
     } else {
       setError(res.error || "Ocorreu um erro desconhecido.");
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir permanentemente este produto?")) {
+    if (window.confirm("Tem certeza que deseja excluir permanentemente este produto e os pedidos de teste vinculados a ele?")) {
       const res = await deleteProduct(id);
-      if (!res.success) {
+      if (res.success) {
+        setDeletedIds((prev) => [...prev, id]);
+        router.refresh();
+      } else {
         alert(res.error || "Erro ao deletar produto.");
       }
     }
@@ -92,7 +98,7 @@ export function ProdutosManager({ initialProducts }: { initialProducts: Product[
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        <h1 className="text-3xl font-bold text-gray-900">Gerenciar Produtos</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gerenciar Produtos</h1>
         
         <div className="flex gap-2 w-full sm:w-auto">
           <button 
@@ -191,17 +197,17 @@ export function ProdutosManager({ initialProducts }: { initialProducts: Product[
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex justify-end gap-2">
                         <button 
                           onClick={() => openEditModal(product)}
-                          className="bg-white border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-300 p-2 rounded-lg transition-colors shadow-sm"
+                          className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-300 p-2 rounded-lg transition-colors shadow-sm"
                           title="Editar"
                         >
                           <Edit size={16} />
                         </button>
                         <button 
                           onClick={() => handleDelete(product.id)}
-                          className="bg-white border border-gray-200 text-gray-600 hover:text-red-600 hover:border-red-300 p-2 rounded-lg transition-colors shadow-sm"
+                          className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 hover:border-red-300 p-2 rounded-lg transition-colors shadow-sm"
                           title="Excluir"
                         >
                           <Trash2 size={16} />

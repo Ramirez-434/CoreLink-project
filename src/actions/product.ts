@@ -141,11 +141,17 @@ export async function deleteProduct(id: string) {
       return { success: false, error: "Acesso negado. Apenas administradores podem excluir produtos." };
     }
 
-    await prisma.product.delete({
-      where: { id },
-    });
+    await prisma.$transaction([
+      prisma.subscription.deleteMany({ where: { productId: id } }),
+      prisma.order.deleteMany({ where: { productId: id } }),
+      prisma.product.delete({ where: { id } }),
+    ]);
 
     revalidatePath("/admin/produtos");
+    revalidatePath("/admin/pedidos");
+    revalidatePath("/admin/dashboard");
+    revalidatePath("/admin/assinaturas");
+    revalidatePath("/minha-conta");
     revalidatePath("/sistemas");
     revalidatePath("/produtos");
     revalidatePath("/");
@@ -153,6 +159,6 @@ export async function deleteProduct(id: string) {
     return { success: true };
   } catch (error) {
     console.error(error);
-    return { success: false, error: "Erro ao deletar o produto. Pode haver pedidos vinculados a ele." };
+    return { success: false, error: "Erro ao deletar o produto." };
   }
 }
