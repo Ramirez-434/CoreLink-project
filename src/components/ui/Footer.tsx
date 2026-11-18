@@ -5,8 +5,8 @@ import { HJ_INFOR_COMMERCIAL_WHATSAPP } from "@/lib/whatsapp";
 
 export async function Footer() {
   const [companyName, companyEmail, companyCnpj] = await Promise.all([
-    getSystemSetting("company_name", "HJ Infor"),
-    getSystemSetting("company_email", "contato@hjinfor.com.br"),
+    getSystemSetting("company_name", "HJ INFO"),
+    getSystemSetting("company_email", "hjinfo@gmail.com"),
     getSystemSetting("company_cnpj", "00.000.000/0001-00"),
   ]);
 
@@ -104,7 +104,7 @@ export async function Footer() {
                   href="/sistemas"
                   className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors text-sm"
                 >
-                  CoreLink ERP Cloud
+                  HJ INFO ERP Cloud
                 </Link>
               </li>
               <li>

@@ -57,7 +57,7 @@ export default async function Home() {
           <div className="w-full lg:w-1/2 animate-fade-in-up">
             <img
               src="/images/tech-software.jpg"
-              alt="Painel corporativo do CoreLink para gestão e faturamento empresarial"
+              alt="Painel corporativo da HJ INFO para gestão e faturamento empresarial"
               className="w-full rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 hover:scale-[1.01] transition-transform duration-500"
             />
           </div>
@@ -187,7 +187,7 @@ export default async function Home() {
       <div className="mt-32 pt-16 border-t border-gray-100 dark:border-gray-800">
         <div className="text-center mb-16 animate-fade-in-up">
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
-            Por que escolher a <span className="text-primary dark:text-blue-400">HJ Infor</span>?
+            Por que escolher a <span className="text-primary dark:text-blue-400">HJ INFO</span>?
           </h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-balance">
             Nossa plataforma foi construída pensando nas necessidades reais do seu dia a dia.
@@ -262,7 +262,7 @@ export default async function Home() {
             Pronto para modernizar a gestão da sua empresa?
           </h2>
           <p className="text-gray-300 text-lg mb-10 leading-relaxed text-balance">
-            Cadastre sua empresa e conte com a implantação assistida da equipe técnica da HJ Infor para faturar com tranquilidade.
+            Cadastre sua empresa e conte com a implantação assistida da equipe técnica da HJ INFO para faturar com tranquilidade.
           </p>
           {!session && (
             <Link 

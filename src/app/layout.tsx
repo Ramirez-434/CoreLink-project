@@ -17,8 +17,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "CoreLink | Soluções Empresariais - HJ Infor",
-  description: "Sistemas inovadores para o seu negócio. Catálogo e gestão de softwares CoreLink.",
+  title: "HJ INFO | Soluções e Sistemas Empresariais",
+  description: "Sistemas inovadores para o seu negócio. Catálogo e gestão de softwares corporativos HJ INFO.",
 };
 
 export default function RootLayout({

@@ -138,7 +138,7 @@ export default async function MinhaContaPage({
             <Sparkles size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
             <div className="min-w-0">
               <h2 className="text-base font-bold text-emerald-950 dark:text-emerald-100 break-words">
-                Bem-vindo à HJ Infor, {user.name}! Sua conta corporativa já está ativa.
+                Bem-vindo à HJ INFO, {user.name}! Sua conta corporativa já está ativa.
               </h2>
               <p className="text-xs sm:text-sm text-emerald-800 dark:text-emerald-300 mt-0.5 leading-relaxed">
                 Seu acesso foi liberado automaticamente. Complete os dados fiscais da empresa abaixo ou conheça o painel no tour guiado.
@@ -205,7 +205,7 @@ export default async function MinhaContaPage({
                   : "Implantação Assistida e Suporte Pós-Venda B2B"}
               </h2>
               <p className="text-sm text-emerald-100/90 max-w-2xl leading-relaxed">
-                Envie para a equipe de implantação da <strong>HJ Infor</strong> o resumo automático com o{" "}
+                Envie para a equipe de implantação da <strong>HJ INFO</strong> o resumo automático com o{" "}
                 <strong>pedido #{activeOrders[0].id.slice(0, 8).toUpperCase()}</strong>,{" "}
                 <strong>
                   {activeOrders.length} sistema{activeOrders.length > 1 ? "s" : ""} contratado{activeOrders.length > 1 ? "s" : ""}
@@ -258,7 +258,7 @@ export default async function MinhaContaPage({
                 <Package size={28} />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
-                Como funciona a ativação dos seus sistemas na HJ Infor
+                Como funciona a ativação dos seus sistemas na HJ INFO
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
                 Assim que você escolher um sistema, suas licenças, status de implantação e o canal direto de suporte técnico via WhatsApp ficam disponíveis neste painel.

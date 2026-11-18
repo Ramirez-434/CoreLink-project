@@ -98,7 +98,7 @@ export function AdminSidebar({
       <aside className="w-64 shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 hidden md:flex flex-col sticky top-0 h-screen">
         <div className="h-20 flex items-center px-8 border-b border-gray-200 dark:border-gray-700">
           <span className="font-extrabold text-2xl tracking-tighter text-gray-900 dark:text-white">
-            CoreLink <span className="text-primary dark:text-blue-400">Admin</span>
+            HJ INFO <span className="text-primary dark:text-blue-400">Admin</span>
           </span>
         </div>
         {nav}
@@ -107,7 +107,7 @@ export function AdminSidebar({
       {/* Mobile */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4">
         <span className="font-extrabold text-lg text-gray-900 dark:text-white">
-          CoreLink <span className="text-primary dark:text-blue-400">Admin</span>
+          HJ INFO <span className="text-primary dark:text-blue-400">Admin</span>
         </span>
         <button
           onClick={() => setOpen(true)}

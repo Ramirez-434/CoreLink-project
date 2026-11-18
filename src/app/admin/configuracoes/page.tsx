@@ -2,7 +2,7 @@ import { getSystemSetting } from "@/actions/settings";
 import { ConfiguracoesClient } from "./ConfiguracoesClient";
 
 export const metadata = {
-  title: "Configurações Gerais | CoreLink Admin",
+  title: "Configurações Gerais | HJ INFO Admin",
   description: "Gerencie as preferências globais, informações da empresa e parâmetros do sistema.",
 };
 
@@ -15,8 +15,8 @@ export default async function ConfiguracoesPage() {
     emailNotifications,
     tourEnabled,
   ] = await Promise.all([
-    getSystemSetting("company_name", "CoreLink (HJ Infor)"),
-    getSystemSetting("company_email", "contato@corelink.com.br"),
+    getSystemSetting("company_name", "HJ INFO"),
+    getSystemSetting("company_email", "hjinfo@gmail.com"),
     getSystemSetting("company_cnpj", "12.345.678/0001-90"),
     getSystemSetting("maintenance_mode", "false"),
     getSystemSetting("email_notifications", "true"),

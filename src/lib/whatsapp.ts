@@ -36,8 +36,8 @@ export function buildCommercialWhatsAppUrl(
   const cleanPhone = commercialPhone.replace(/\D/g, "");
   const headerTitle =
     payload.context === "CHECKOUT"
-      ? "*[CORELINK B2B — NOVO PEDIDO / IMPLANTAÇÃO]*"
-      : "*[CORELINK B2B — ATENDIMENTO E PÓS-VENDA]*";
+      ? "*[HJ INFO B2B — NOVO PEDIDO / IMPLANTAÇÃO]*"
+      : "*[HJ INFO B2B — ATENDIMENTO E PÓS-VENDA]*";
 
   const softwaresList = payload.softwares
     .map((item, idx) => {
@@ -65,7 +65,7 @@ export function buildCommercialWhatsAppUrl(
   const lines = [
     headerTitle,
     "",
-    `Olá, equipe comercial da *HJ Infor*! Gostaria de atendimento referente à contratação de software corporativo:`,
+    `Olá, equipe comercial da *HJ INFO*! Gostaria de atendimento referente à contratação de software corporativo:`,
     "",
     `🏢 *Razão Social / Empresa:* ${safeCompany}`,
     ...(safeCustomer && safeCustomer !== safeCompany
@@ -120,9 +120,9 @@ export function buildAdminToClientWhatsAppUrl(params: {
       : "Em Processamento";
 
   const lines = [
-    `*[HJ INFOR — PÓS-VENDA E SUPORTE B2B]*`,
+    `*[HJ INFO — PÓS-VENDA E SUPORTE B2B]*`,
     "",
-    `Olá *${params.customerName}*, falamos do setor comercial/pós-venda da *HJ Infor (CoreLink)*!`,
+    `Olá *${params.customerName}*, falamos do setor comercial/pós-venda da *HJ INFO*!`,
     "",
     `Estamos entrando em contato referente ao pedido corporativo abaixo:`,
     `🔖 *ID do Pedido:* #${shortOrderId}`,

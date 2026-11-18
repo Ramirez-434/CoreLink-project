@@ -161,7 +161,7 @@ export function ConfiguracoesClient({
                 type="text"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
-                placeholder="Ex: CoreLink (HJ Infor)"
+                placeholder="Ex: HJ INFO"
                 required
                 className="w-full px-4 py-2.5 min-h-[44px] rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm transition-colors"
               />
@@ -180,7 +180,7 @@ export function ConfiguracoesClient({
                 type="email"
                 value={companyEmail}
                 onChange={(e) => setCompanyEmail(e.target.value)}
-                placeholder="contato@corelink.com.br"
+                placeholder="hjinfo@gmail.com"
                 required
                 className="w-full px-4 py-2.5 min-h-[44px] rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm transition-colors"
               />

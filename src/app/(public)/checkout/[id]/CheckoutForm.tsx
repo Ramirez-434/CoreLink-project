@@ -201,7 +201,7 @@ export function CheckoutForm({
             </h2>
             <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
               Acione agora o canal direto de pós-venda B2B no WhatsApp Comercial da{" "}
-              <strong>HJ Infor</strong> com todos os dados parametrizados da sua empresa.
+              <strong>HJ INFO</strong> com todos os dados parametrizados da sua empresa.
             </p>
           </div>
 

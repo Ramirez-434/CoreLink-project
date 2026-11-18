@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Termos de Uso | CoreLink",
-  description: "Termos de uso da plataforma CoreLink.",
+  title: "Termos de Uso | HJ INFO",
+  description: "Termos de uso da plataforma HJ INFO.",
 };
 
 export default function TermosDeUsoPage() {
@@ -10,10 +10,10 @@ export default function TermosDeUsoPage() {
         <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">Termos de Uso</h1>
         <p className="text-gray-500 dark:text-gray-400 mb-8 font-medium">Última atualização: {new Date().toLocaleDateString("pt-BR")}</p>
 
-        <p>Bem-vindo ao <strong>CoreLink / HJ Infor</strong>. Estes Termos de Uso governam a sua utilização do nosso site e plataforma SaaS.</p>
+        <p>Bem-vindo à <strong>HJ INFO</strong>. Estes Termos de Uso governam a sua utilização do nosso site e plataforma SaaS.</p>
 
         <h2>1. Aceitação dos Termos</h2>
-        <p>Ao acessar e utilizar os serviços da HJ Infor, você concorda expressamente em cumprir e estar sujeito a estes Termos de Uso. Se você não concorda com alguma parte destes termos, você não deve utilizar a nossa plataforma.</p>
+        <p>Ao acessar e utilizar os serviços da HJ INFO, você concorda expressamente em cumprir e estar sujeito a estes Termos de Uso. Se você não concorda com alguma parte destes termos, você não deve utilizar a nossa plataforma.</p>
 
         <h2>2. Uso da Plataforma</h2>
         <p>A plataforma é fornecida &quot;no estado em que se encontra&quot;, com a finalidade de gestão comercial e controle de acessos. Você se compromete a:</p>
@@ -27,10 +27,10 @@ export default function TermosDeUsoPage() {
         <p>Certos produtos e serviços estão sujeitos a pagamento (compra única ou assinatura recorrente). As condições específicas de precificação, faturamento e cancelamento serão apresentadas a você antes da conclusão da compra.</p>
 
         <h2>4. Propriedade Intelectual</h2>
-        <p>Todo o código, software, design, textos, imagens e outras propriedades intelectuais encontradas no site são propriedade da HJ Infor. É estritamente proibido copiar, modificar, distribuir, vender ou alugar qualquer parte do nosso serviço ou do software incluído.</p>
+        <p>Todo o código, software, design, textos, imagens e outras propriedades intelectuais encontradas no site são propriedade da HJ INFO. É estritamente proibido copiar, modificar, distribuir, vender ou alugar qualquer parte do nosso serviço ou do software incluído.</p>
 
         <h2>5. Limitação de Responsabilidade</h2>
-        <p>A HJ Infor não será responsável por quaisquer danos diretos, indiretos, incidentais, especiais, consequenciais ou exemplares, resultantes de lucros cessantes, uso de dados ou outras perdas intangíveis resultantes do uso ou da impossibilidade de uso do serviço.</p>
+        <p>A HJ INFO não será responsável por quaisquer danos diretos, indiretos, incidentais, especiais, consequenciais ou exemplares, resultantes de lucros cessantes, uso de dados ou outras perdas intangíveis resultantes do uso ou da impossibilidade de uso do serviço.</p>
 
         <h2>6. Alterações nos Termos</h2>
         <p>Nós nos reservamos o direito de atualizar ou modificar estes Termos de Uso a qualquer momento, sem aviso prévio. O seu uso contínuo da plataforma após tais modificações constituirá a sua aceitação dos novos termos.</p>

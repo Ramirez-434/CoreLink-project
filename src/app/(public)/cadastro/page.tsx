@@ -135,7 +135,7 @@ export default function CadastroPage() {
             Crie sua conta corporativa
           </h1>
           <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-            Configure seu acesso à <span className="font-bold text-primary dark:text-blue-400">HJ Infor</span> em menos de 1 minuto. Os dados fiscais da empresa (CNPJ e Razão Social) podem ser adicionados depois no painel.
+            Configure seu acesso à <span className="font-bold text-primary dark:text-blue-400">HJ INFO</span> em menos de 1 minuto. Os dados fiscais da empresa (CNPJ e Razão Social) podem ser adicionados depois no painel.
           </p>
         </div>
 

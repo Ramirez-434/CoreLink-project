@@ -78,7 +78,7 @@ function LoginFormContent() {
     /\D/g,
     ""
   )}&text=${encodeURIComponent(
-    `*[HJ INFOR — RECUPERAÇÃO DE ACESSO CORPORATIVO]*\n\nOlá! Preciso redefinir a senha de acesso ao painel CoreLink para o e-mail: *${
+    `*[HJ INFO — RECUPERAÇÃO DE ACESSO CORPORATIVO]*\n\nOlá! Preciso redefinir a senha de acesso ao painel HJ INFO para o e-mail: *${
       email.trim() || "não informado"
     }*.`
   )}`;
@@ -199,7 +199,7 @@ function LoginFormContent() {
         </h1>
         <p className="text-sm text-gray-600 dark:text-gray-300">
           Gerencie suas licenças e acione o suporte corporativo da{" "}
-          <span className="font-bold text-primary dark:text-blue-400">HJ Infor</span>.
+          <span className="font-bold text-primary dark:text-blue-400">HJ INFO</span>.
         </p>
       </div>
 

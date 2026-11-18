@@ -12,10 +12,10 @@ export default async function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
           <span className="font-extrabold text-2xl tracking-tight text-gray-900 dark:text-white">
-            CoreLink
+            HJ <span className="text-primary dark:text-blue-400">INFO</span>
           </span>
           <span className="text-xs font-bold text-primary dark:text-blue-400 bg-blue-50 dark:bg-blue-900/40 px-2.5 py-0.5 rounded-md border border-blue-200/50 dark:border-blue-800/50">
-            HJ Infor
+            Sistemas B2B
           </span>
         </Link>
 

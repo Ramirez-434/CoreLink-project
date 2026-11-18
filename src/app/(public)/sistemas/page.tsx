@@ -6,8 +6,8 @@ import { CatalogGridSkeleton } from "@/components/ui/Skeleton";
 import { Package, Search, X } from "lucide-react";
 
 export const metadata = {
-  title: "Sistemas & Softwares Empresariais | CoreLink",
-  description: "Conheça o catálogo de sistemas corporativos, ERP, PDV e controle empresarial da HJ Infor.",
+  title: "Sistemas & Softwares Empresariais | HJ INFO",
+  description: "Conheça o catálogo de sistemas corporativos, ERP, PDV e controle empresarial da HJ INFO.",
 };
 
 async function CatalogProductsStream({ query }: { query?: string }) {

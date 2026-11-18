@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, ShieldCheck, Users, Zap } from "lucide-react";
 
 export const metadata = {
-  title: "Sobre a HJ Infor | CoreLink Soluções Empresariais",
-  description: "Conheça a história, missão e diferenciais da HJ Infor e da plataforma CoreLink no desenvolvimento de softwares B2B.",
+  title: "Sobre a HJ INFO | Soluções Empresariais",
+  description: "Conheça a história, missão e diferenciais da HJ INFO no desenvolvimento de softwares corporativos B2B.",
 };
 
 export default function SobrePage() {
@@ -13,7 +13,7 @@ export default function SobrePage() {
         {/* Cabeçalho */}
         <div className="mb-12">
           <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">
-            Sobre a CoreLink & HJ Infor
+            Sobre a HJ INFO
           </h1>
           <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed text-balance">
             Tecnologia corporativa prática e acessível para transformar a gestão, o faturamento e a produtividade de pequenas e médias empresas brasileiras.
@@ -24,7 +24,7 @@ export default function SobrePage() {
           {/* Apresentação Principal */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-8 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
             <p className="text-base sm:text-lg">
-              A <strong>HJ Infor</strong> é a empresa de tecnologia desenvolvedora e operadora comercial por trás da plataforma <strong>CoreLink</strong>. Desde nossa fundação, temos o compromisso intransigente de entregar sistemas de gestão empresarial (ERP, PDV, Estoque e NF-e) confiáveis, rápidos e sem complexidades desnecessárias.
+              A <strong>HJ INFO</strong> é uma empresa de tecnologia especializada no desenvolvimento e implantação de soluções corporativas. Desde nossa fundação, temos o compromisso intransigente de entregar sistemas de gestão empresarial (ERP, PDV, Estoque e NF-e) confiáveis, rápidos e sem complexidades desnecessárias.
             </p>
             <p className="text-base">
               Acreditamos que todo empreendedor merece ferramentas poderosas para controlar suas finanças, emitir documentos fiscais em conformidade e acelerar suas vendas com tranquilidade.

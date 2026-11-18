@@ -132,7 +132,7 @@ export function ClientesManager({ initialUsers }: { initialUsers: UserType[] }) 
                         <div className="flex items-center gap-2">
                           {user.phone}
                           <a 
-                            href={`https://wa.me/55${user.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Olá ${user.name.split(' ')[0]}, somos da CoreLink! Tudo bem?`)}`}
+                            href={`https://wa.me/55${user.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Olá ${user.name.split(' ')[0]}, somos da HJ INFO! Tudo bem?`)}`}
                             target="_blank" 
                             rel="noreferrer"
                             className="text-green-500 hover:text-green-600 transition-colors"

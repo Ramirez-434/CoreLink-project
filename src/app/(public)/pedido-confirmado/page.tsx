@@ -24,7 +24,7 @@ export default async function PedidoConfirmadoPage({
       })
     : null;
 
-  const softwareName = order?.product?.name || "Licença Corporativa HJ Infor";
+  const softwareName = order?.product?.name || "Licença Corporativa HJ INFO";
   const amount = order ? order.totalAmount ?? order.product.price : null;
 
   const whatsappUrl = buildCommercialWhatsAppUrl({

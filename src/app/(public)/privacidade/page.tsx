@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Política de Privacidade | CoreLink",
+  title: "Política de Privacidade | HJ INFO",
   description: "Nossa política de privacidade e compromisso com a LGPD.",
 };
 
@@ -10,7 +10,7 @@ export default function PrivacidadePage() {
         <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">Política de Privacidade</h1>
         <p className="text-gray-500 dark:text-gray-400 mb-8 font-medium">Última atualização: {new Date().toLocaleDateString("pt-BR")}</p>
 
-        <p>A <strong>HJ Infor / CoreLink</strong> valoriza a sua privacidade e está empenhada em proteger os seus dados pessoais. Esta política de privacidade informará como cuidamos dos seus dados pessoais quando você visita o nosso site e informará sobre os seus direitos de privacidade e como a lei protege você (Lei Geral de Proteção de Dados - LGPD).</p>
+        <p>A <strong>HJ INFO</strong> valoriza a sua privacidade e está empenhada em proteger os seus dados pessoais. Esta política de privacidade informará como cuidamos dos seus dados pessoais quando você visita o nosso site e informará sobre os seus direitos de privacidade e como a lei protege você (Lei Geral de Proteção de Dados - LGPD).</p>
 
         <h2>1. Dados que coletamos</h2>
         <p>Podemos coletar, usar, armazenar e transferir diferentes tipos de dados pessoais sobre você, agrupados da seguinte forma:</p>
@@ -42,7 +42,7 @@ export default function PrivacidadePage() {
 
         <h2>4. Contato</h2>
         <p>Para dúvidas sobre esta política de privacidade ou sobre nossas práticas de privacidade, entre em contato conosco em:</p>
-        <p><strong>E-mail:</strong> lgpd@corelink.com.br</p>
+        <p><strong>E-mail:</strong> hjinfo@gmail.com</p>
 
       </div>
     </div>

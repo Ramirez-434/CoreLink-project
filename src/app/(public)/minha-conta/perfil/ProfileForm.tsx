@@ -487,7 +487,7 @@ export function ProfileForm({ user }: { user: ProfileUser }) {
             disabled={isLoading}
             onChange={(e) => setCompanyName(e.target.value)}
             maxLength={120}
-            placeholder="Ex.: HJ Infor Tecnologia Ltda"
+            placeholder="Ex.: HJ INFO Tecnologia Ltda"
             className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-gray-900 focus:ring-2 text-gray-900 dark:text-white disabled:opacity-60 ${
               flaggedFields.includes("companyName")
                 ? "border-red-500 focus:ring-red-500/40"

@@ -39,7 +39,7 @@ export async function sendOrderConfirmationEmail(
     }
 
     const { data, error } = await resend.emails.send({
-      from: "CoreLink <suporte@corelink.com.br>", // Precisa ser um domínio verificado no Resend
+      from: "HJ INFO <suporte@hjinfor.com.br>", // Precisa ser um domínio verificado no Resend
       to: [userEmail],
       subject: `Seu pedido #${safeOrderCode} foi confirmado! 🎉`,
       html: `
@@ -50,9 +50,9 @@ export async function sendOrderConfirmationEmail(
           <div style="padding: 30px;">
             <p>Olá <strong>${safeUserName}</strong>,</p>
             <p>Seu pagamento foi aprovado e seu acesso ao sistema <strong>${safeProductName}</strong> já está liberado!</p>
-            <p>Para acessar seu produto, faça login na sua conta CoreLink e vá até a aba "Meus Sistemas".</p>
+            <p>Para acessar seu produto, faça login na sua conta HJ INFO e vá até a aba "Meus Sistemas".</p>
             <br/>
-            <p>Abraços,<br/>Equipe CoreLink</p>
+            <p>Abraços,<br/>Equipe HJ INFO</p>
           </div>
         </div>
       `,
@@ -80,20 +80,20 @@ export async function sendWelcomeEmail(userEmail: string, userName: string) {
     }
 
     await resend.emails.send({
-      from: "CoreLink <suporte@corelink.com.br>",
+      from: "HJ INFO <suporte@hjinfor.com.br>",
       to: [userEmail],
-      subject: "Bem-vindo(a) à CoreLink! 🚀",
+      subject: "Bem-vindo(a) à HJ INFO! 🚀",
       html: `
         <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">
           <div style="background-color: #2563eb; color: white; padding: 20px; text-align: center;">
-            <h1 style="margin: 0;">Bem-vindo(a) à CoreLink!</h1>
+            <h1 style="margin: 0;">Bem-vindo(a) à HJ INFO!</h1>
           </div>
           <div style="padding: 30px;">
             <p>Olá <strong>${safeUserName}</strong>,</p>
             <p>Estamos muito felizes em ter você conosco. Nossa plataforma foi desenhada para transformar a gestão da sua empresa.</p>
             <p>Acesse o catálogo para conferir os sistemas disponíveis!</p>
             <br/>
-            <p>Abraços,<br/>Equipe CoreLink</p>
+            <p>Abraços,<br/>Equipe HJ INFO</p>
           </div>
         </div>
       `,
